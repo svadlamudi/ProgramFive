@@ -10,6 +10,14 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Main.h" />
+    <ClInclude Include="Packet.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Packet.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CD2D49F0-5954-4F0C-9E92-62171EC30D39}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -75,14 +83,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\Visual Studio Workspace\Program 5\Program 5\Main.cpp" />
-    <ClCompile Include="..\..\..\..\Visual Studio Workspace\Program 5\Program 5\Packet.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\Visual Studio Workspace\Program 5\Program 5\Main.h" />
-    <ClInclude Include="..\..\..\..\Visual Studio Workspace\Program 5\Program 5\Packet.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
