@@ -13,7 +13,7 @@ int main() {
 	vector<int> Two(1, 1);
 	vector<int> RouteTwo(1, 5);
 
-	LinkList *mOne = new LinkList();
+	LinkListPacket *mOne = new LinkListPacket();
 	mOne->insert(&Route, &One);
 	mOne->insert(&RouteTwo, &Two);
 

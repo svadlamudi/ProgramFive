@@ -11,15 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LinkList.h" />
+    <ClInclude Include="LinkListNode.h" />
+    <ClInclude Include="LinkListPacket.h" />
     <ClInclude Include="Main.h" />
-    <ClInclude Include="nodeMap.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="NodeMap.h" />
     <ClInclude Include="Packet.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LinkList.cpp" />
+    <ClCompile Include="LinkListNode.cpp" />
+    <ClCompile Include="LinkListPacket.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="nodeMap.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="NodeMap.cpp" />
     <ClCompile Include="Packet.cpp" />
   </ItemGroup>
   <ItemGroup>

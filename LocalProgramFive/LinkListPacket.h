@@ -1,15 +1,15 @@
-#ifndef _LINKLIST_H
-#define _LINKLIST_H
+#ifndef _LINKLISTPACKET_H
+#define _LINKLISTPACKET_H
 
 #include "Packet.h"
 #include <string>
 
 using namespace std;
 
-class LinkList {
+class LinkListPacket {
 	public:
 		// Constructor
-		LinkList(Packet *listHead = NULL, string listName = "");
+		LinkListPacket(Packet *listHead = NULL, string listName = "");
 
 		// Accessors and Mutators
 		Packet** getListHead();

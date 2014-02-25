@@ -1,25 +1,25 @@
-#include "LinkList.h"
+#include "LinkListPacket.h"
 
 using namespace std;
 
 // Constructor
-LinkList::LinkList(Packet *listHead, string listName) {
+LinkListPacket::LinkListPacket(Packet *listHead, string listName) {
 	this->listHead = listHead;
 	this->listName = listName;
 }
 
 // Accessors and Mutators
-Packet ** LinkList::getListHead() {
+Packet ** LinkListPacket::getListHead() {
 	return &(this->listHead);
 }
-string LinkList::getListName() {
+string LinkListPacket::getListName() {
 	return this->listName;
 }
 
-void LinkList::setListHead(Packet **listHead) {
+void LinkListPacket::setListHead(Packet **listHead) {
 	this->listHead = *listHead;
 }
-void LinkList::setListName(string listName) {
+void LinkListPacket::setListName(string listName) {
 	this->listName = listName;
 }
 
@@ -36,7 +36,7 @@ void LinkList::setListName(string listName) {
  * Return:
  *	void
  */
-void LinkList::insert(vector<int> *packetRoute, vector<int> *packetTimes) {
+void LinkListPacket::insert(vector<int> *packetRoute, vector<int> *packetTimes) {
 	Packet **temp = &(this->listHead);
 	Packet *newPacket = new Packet(packetRoute, packetTimes);
 	
@@ -64,7 +64,7 @@ void LinkList::insert(vector<int> *packetRoute, vector<int> *packetTimes) {
  * Return:
  *	Packet*
  */
-Packet * LinkList::getNextNode() {
+Packet * LinkListPacket::getNextNode() {
 	if (this->listHead != NULL) {
 		Packet *temp = this->listHead;
 		this->listHead = *((this->listHead)->getNext());
@@ -86,7 +86,7 @@ Packet * LinkList::getNextNode() {
  * Return:
  *	void
  */
-void LinkList::printList(FILE *output) {
+void LinkListPacket::printList(FILE *output) {
 	Packet *temp = this->listHead;
 
 	while (temp != NULL && output != NULL)
