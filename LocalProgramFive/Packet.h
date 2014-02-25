@@ -9,12 +9,12 @@ using namespace std;
 class Packet {
 	public:
 		// Constructors
-		Packet(vector<int> *packetRoute = new vector<int>(), vector<int> *packetTimes = new vector<int>(), Packet *next = nullptr);
+		Packet(vector<int> *packetRoute = new vector<int>(), vector<int> *packetTimes = new vector<int>(), Packet *next = NULL);
 
 		// Accessors and Mutators
 		vector<int> getPacketRoute();
 		vector<int> getPacketTimes();
-		Packet* getNext();
+		Packet** getNext();
 		void setPacketRoute(vector<int> packetRoute);
 		void setPacketTimes(vector<int> packetTimes);
 		void setNext(Packet *next);

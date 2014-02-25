@@ -15,8 +15,8 @@ vector<int> Packet::getPacketRoute() {
 vector<int> Packet::getPacketTimes() {
 	return this->packetTimes;
 }
-Packet* Packet::getNext() {
-	return this->next;
+Packet** Packet::getNext() {
+	return &(this->next);
 }
 
 void Packet::setPacketRoute(vector<int> packetRoute) {
@@ -24,4 +24,7 @@ void Packet::setPacketRoute(vector<int> packetRoute) {
 }
 void Packet::setPacketTimes(vector<int> packetTimes) {
 	this->packetTimes = packetTimes;
+}
+void Packet::setNext(Packet *next) {
+	this->next = next;
 }
