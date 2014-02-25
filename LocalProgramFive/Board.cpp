@@ -52,8 +52,8 @@ void Board::generateRandomNodePos(vector<Node> nodePos) {
 	{
 		for (size_t i = 0; i < this->numSources; i++)
 		{
-			int xCoord = rand() % (this->boardLayout.size() - 1);
-			int yCoord = rand() % ((this->boardLayout.at(i)).size() - 1);
+			nodePos.at(i).setXCoord(0);
+			nodePos.at(i).setYCoord(i);
 		}
 		for (size_t j = 0; j < this->numMules; j++)
 		{
@@ -61,7 +61,8 @@ void Board::generateRandomNodePos(vector<Node> nodePos) {
 		}
 		for (size_t k = 0; k < this->numRecievers; k++)
 		{
-
+			nodePos.at(k).setXCoord(length);
+			nodePos.at(k).setYCoord(k);
 		}
 	}
 }
