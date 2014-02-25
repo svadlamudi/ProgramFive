@@ -30,7 +30,7 @@
     <ClInclude Include="LinkListPacket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LinkListNode.h">
+    <ClInclude Include="Board.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,7 +50,7 @@
     <ClCompile Include="LinkListPacket.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LinkListNode.cpp">
+    <ClCompile Include="Board.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

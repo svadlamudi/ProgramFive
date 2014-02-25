@@ -1,7 +1,7 @@
 #include "Node.h"
 
 // Constructor
-Node::Node(int id, int xCoord, int yCoord, Node *next) {
+Node::Node(int id, int xCoord, int yCoord, LinkListPacket queue, Node *next) {
 	this->id = id;
 	this->xCoord = xCoord;
 	this->yCoord = yCoord;

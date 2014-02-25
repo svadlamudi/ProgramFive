@@ -3,24 +3,24 @@
 using namespace std;
 
 // Constructor
-LinkListPacket::LinkListPacket(Packet *listHead, string listName) {
+LinkListPacket::LinkListPacket(Packet *listHead, int listId) {
 	this->listHead = listHead;
-	this->listName = listName;
+	this->listId = listId;
 }
 
 // Accessors and Mutators
 Packet ** LinkListPacket::getListHead() {
 	return &(this->listHead);
 }
-string LinkListPacket::getListName() {
-	return this->listName;
+int LinkListPacket::getListId() {
+	return this->listId;
 }
 
 void LinkListPacket::setListHead(Packet **listHead) {
 	this->listHead = *listHead;
 }
-void LinkListPacket::setListName(string listName) {
-	this->listName = listName;
+void LinkListPacket::setListId(int listId) {
+	this->listId = listId;
 }
 
 // Object Functions
@@ -42,7 +42,7 @@ void LinkListPacket::insert(vector<int> *packetRoute, vector<int> *packetTimes) 
 	
 	while (*temp != NULL && !packetTimes->empty())
 	{
-		if ((*temp)->getPacketTimes().front() > newPacket->getPacketTimes().front())
+		if ((*temp)->getPacketTimes().at((*temp)->getCurrentNode()) > newPacket->getPacketTimes().at(newPacket->getCurrentNode()))
 		{
 			break;
 		}
@@ -128,5 +128,10 @@ void LinkListPacket::printList(FILE *output) {
 
 		temp = *(temp->getNext());
 	}
+
+	if (output == NULL)
+		printf("\n");
+	else
+		fprintf(output, "\n");
 }
 

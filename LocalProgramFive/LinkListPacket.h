@@ -9,13 +9,13 @@ using namespace std;
 class LinkListPacket {
 	public:
 		// Constructor
-		LinkListPacket(Packet *listHead = NULL, string listName = "");
+		LinkListPacket(Packet *listHead = NULL, int listId = 0);
 
 		// Accessors and Mutators
 		Packet** getListHead();
-		string getListName();
+		int getListId();
 		void setListHead(Packet **listHead);
-		void setListName(string listName);
+		void setListId(int listId);
 
 		// Object Functions
 		void insert(vector<int> *packetRoute, vector<int> *packetTimes);
@@ -24,7 +24,7 @@ class LinkListPacket {
 
 	private:
 		Packet *listHead;
-		string listName;
+		int listId;
 };
 
 #endif

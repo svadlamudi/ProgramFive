@@ -2,11 +2,12 @@
 #define _NODE_H
 
 #include <cstdlib>
+#include "LinkListPacket.h"
 
 class Node {
 	public:
 		// Constructor
-		Node(int id = -1, int xCoord = -1, int yCoord = -1, Node *next = NULL);
+		Node(int id = -1, int xCoord = -1, int yCoord = -1, LinkListPacket queue = *(new LinkListPacket()), Node *next = NULL);
 
 		// Accessors and Mutators
 		int getId();
@@ -26,6 +27,7 @@ class Node {
 		int id;
 		int xCoord;
 		int yCoord;
+		LinkListPacket queue;
 		Node *next;
 };
 
