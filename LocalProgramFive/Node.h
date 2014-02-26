@@ -13,20 +13,25 @@ class Node {
 		int getId();
 		int getXCoord();
 		int getYCoord();
+		int getDirection();
 		Node * getNext();
 
 		void setId(int id);
 		void setXCoord(int xCoord);
 		void setYCoord(int yCoord);
+		void setDirection(int direction);
 		void setNext(Node **next);
 
 		// Object Functions
-
+		void moveNode(vector<Node> nodeVector, int length, int width);
+		void nodeHop(int length, int width);
+		bool collisionCheck(vector<Node> nodeVector);
 		
 	private:
 		int id;
 		int xCoord;
 		int yCoord;
+		int direction;
 		LinkListPacket queue;
 		Node *next;
 };

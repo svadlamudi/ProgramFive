@@ -1,10 +1,11 @@
 #include "Packet.h"
-
+#include <math.h>
 
 // Constructor
-Packet::Packet(vector<int> *packetRoute, vector<int> *packetTimes, int currentNode, Packet *next) {
+Packet::Packet(vector<int> *packetRoute, vector<int> *packetTimes, int packetSize, int currentNode, Packet *next) {
 	this->packetRoute = *packetRoute;
 	this->packetTimes = *packetTimes;
+	this->packetSize = packetSize;
 	this->currentNode = currentNode;
 	this->next = next;
 }
@@ -15,6 +16,9 @@ vector<int> Packet::getPacketRoute() {
 }
 vector<int> Packet::getPacketTimes() {
 	return this->packetTimes;
+}
+int Packet::getPacketSize() {
+	return this->packetSize;
 }
 int Packet::getCurrentNode() {
 	return this->currentNode;
@@ -29,9 +33,20 @@ void Packet::setPacketRoute(vector<int> packetRoute) {
 void Packet::setPacketTimes(vector<int> packetTimes) {
 	this->packetTimes = packetTimes;
 }
+void Packet::setPacketSize(int packetSize) {
+	this->packetSize = packetSize;
+}
 void Packet::setCurrentNode(int currentNode) {
 	this->currentNode = currentNode;
 }
 void Packet::setNext(Packet *next) {
 	this->next = next;
+}
+
+// Object Functions
+
+
+
+double Packet::propagationTime(Node recieveNode) {
+
 }
