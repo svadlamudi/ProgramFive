@@ -21,6 +21,12 @@ int Node::getYCoord() {
 int Node::getDirection() {
 	return this->direction;
 }
+int Node::getStartTime() {
+	return this->startTime;
+}
+int Node::getSendSize() {
+	return this->sendSize;
+}
 Node * Node::getNext() {
 	return this->next;
 }
@@ -36,6 +42,12 @@ void Node::setYCoord(int yCoord) {
 }
 void Node::setDirection(int direction) {
 	this->direction = direction;
+}
+void Node::setStartTime(int startTime) {
+	this->startTime = startTime;
+}
+void Node::setSendSize(int sendSize) {
+	this->sendSize = sendSize;
 }
 void Node::setNext(Node **next) {
 	this->next = *next;

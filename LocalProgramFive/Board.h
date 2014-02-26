@@ -29,6 +29,7 @@ class Board {
 		void setNumRecievers(int numRecievers);
 
 		// Object Functions
+		void createNodeVector();
 		void initializeBoard();
 		void generateRandomNodePos();
 		void setNodePos();

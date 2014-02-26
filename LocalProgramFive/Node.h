@@ -15,12 +15,16 @@ class Node {
 		int getXCoord();
 		int getYCoord();
 		int getDirection();
+		int getStartTime();
+		int getSendSize();
 		Node * getNext();
 
 		void setId(int id);
 		void setXCoord(int xCoord);
 		void setYCoord(int yCoord);
 		void setDirection(int direction);
+		void setStartTime(int startTime);
+		void setSendSize(int sendSize);
 		void setNext(Node **next);
 
 		// Object Functions
@@ -34,6 +38,8 @@ class Node {
 		int xCoord;
 		int yCoord;
 		int direction;
+		int startTime;
+		int sendSize;
 		LinkListPacket queue;
 		Node *next;
 };

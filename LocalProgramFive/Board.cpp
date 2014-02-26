@@ -46,6 +46,18 @@ void Board::setNumRecievers(int numRecievers) {
 
 // Object Functions
 
+void Board::createNodeVector() {
+
+	int totalNumNodes = numSources + numMules + numRecievers;
+	vector<Node> tempVector = *new vector<Node>(totalNumNodes + 1);
+
+	for (int i = 1; i <= totalNumNodes+1; i++)
+	{
+		tempVector.at(i) = *new Node(i);
+	}
+
+}
+
 /*
  * Sai Kiran Vadlamudi  C05
  * Initialize the board with all 0s
@@ -76,35 +88,34 @@ void Board::initializeBoard() {
  *	void
  */
 void Board::generateRandomNodePos() {
-	if (nodeVector.size() != 0)
-	{
-		for (int i = 0; i < this->numSources; i++)
+	for (unsigned i = 1; i < nodeVector.size(); i++) {
+		if (i <= numSources)
 		{
 			nodeVector.at(i).setXCoord(0);
 			nodeVector.at(i).setYCoord(i);
 			nodeVector.at(i).setDirection(-1);
 		}
-		for (int j = numSources - 1; j < this->numMules; j++)
+		else if (i > numSources && i <= numMules)
 		{
 			int tempXCoord = (rand() % (this->width - 2)) + 1;
 			int tempYCoord = rand() % (this->length - 1);
-			for (unsigned k = 0; k < nodeVector.size(); k++)
+			for (unsigned j = 0; j < nodeVector.size(); j++)
 			{
-				while (tempXCoord == nodeVector.at(k).getXCoord() && tempYCoord == nodeVector.at(k).getYCoord())
+				while (tempXCoord == nodeVector.at(j).getXCoord() && tempYCoord == nodeVector.at(j).getYCoord())
 				{
 					tempXCoord = (rand() % (this->width - 2)) + 1;
 					tempYCoord = rand() % (this->length - 1);
 				}
 			}
-			nodeVector.at(j).setXCoord(tempXCoord);
-			nodeVector.at(j).setYCoord(tempYCoord);
-			nodeVector.at(j).setDirection(rand() % 3);
+			nodeVector.at(i).setXCoord(tempXCoord);
+			nodeVector.at(i).setYCoord(tempYCoord);
+			nodeVector.at(i).setDirection(rand() % 3);
 		}
-		for (int k = numMules - 1; k < numRecievers; k++)
+		else if (i > numMules && i <= numRecievers)
 		{
-			nodeVector.at(k).setXCoord(this->length);
-			nodeVector.at(k).setYCoord(k);
-			nodeVector.at(k).setDirection(-1);
+			nodeVector.at(i).setXCoord(width);
+			nodeVector.at(i).setYCoord(i%10);
+			nodeVector.at(i).setDirection(-1);
 		}
 	}
 }
