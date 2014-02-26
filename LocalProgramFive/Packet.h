@@ -1,7 +1,6 @@
 #ifndef _PACKET_H
 #define _PACKET_H
 
-#include "Node.h"
 #include <string>
 #include <vector>
 
@@ -25,7 +24,7 @@ class Packet {
 		void setNext(Packet *next);
 
 		// Object Functions
-		double propagationTime(Node recieveNode);
+
 	private:
 		vector<int> packetRoute;
 		vector<int> packetTimes;

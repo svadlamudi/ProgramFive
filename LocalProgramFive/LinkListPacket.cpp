@@ -109,29 +109,6 @@ void LinkListPacket::printList(FILE *output) {
 		temp = *(temp->getNext());
 	}
 
-	while (temp != NULL && output == NULL)
-	{
-		printf("| Source: ");
-		for (unsigned i = 0; i < temp->getPacketRoute().size(); i++)
-		{
-			printf("%3d", temp->getPacketRoute().at(i));
-		}
-		printf(" |");
-
-		printf(" Times: ");
-		for (unsigned i = 0; i < temp->getPacketTimes().size(); i++)
-		{
-			printf("%3d", temp->getPacketTimes().at(i));
-		}
-
-		printf(" |\n");
-
-		temp = *(temp->getNext());
-	}
-
-	if (output == NULL)
-		printf("\n");
-	else
-		fprintf(output, "\n");
+	fprintf(output, "\n");
 }
 

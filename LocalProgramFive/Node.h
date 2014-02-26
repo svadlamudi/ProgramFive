@@ -2,6 +2,7 @@
 #define _NODE_H
 
 #include <cstdlib>
+#include <math.h>
 #include "LinkListPacket.h"
 
 class Node {
@@ -23,6 +24,7 @@ class Node {
 		void setNext(Node **next);
 
 		// Object Functions
+		double propogationTime(Node recieveNode);
 		void moveNode(vector<Node> nodeVector, int length, int width);
 		void nodeHop(int length, int width);
 		bool collisionCheck(vector<Node> nodeVector);

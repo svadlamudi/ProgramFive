@@ -44,9 +44,3 @@ void Packet::setNext(Packet *next) {
 }
 
 // Object Functions
-
-
-
-double Packet::propagationTime(Node recieveNode) {
-
-}

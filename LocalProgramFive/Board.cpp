@@ -151,8 +151,18 @@ void Board::printBoard(FILE *output) {
 	}
 }
 
+/*
+ * Sai Kiran Vadlamudi  C05
+ * Move all mule nodes in this board
+ * 
+ * Parameters:
+ *	None
+ *	
+ * Return:
+ *	void
+ */
 void Board::moveNodes() {
-	for (int i = 0; i < nodeVector.size(); i++)
+	for (unsigned i = 0; i < nodeVector.size(); i++)
 	{
 		nodeVector.at(i).moveNode(nodeVector, length, width);
 	}

@@ -42,6 +42,39 @@ void Node::setNext(Node **next) {
 }
 
 // Object Functions
+
+/*
+ * Sai Kiran Vadlamudi  C05
+ * Calculate the propagation time from this node to receiving node
+ * 
+ * Parameters:
+ *	recieveNode: node that the packet is being sent to
+ *	
+ * Return:
+ *	double
+ */
+double Node::propogationTime(Node recieveNode) {
+
+	double xLen = abs(recieveNode.xCoord - xCoord);
+	double yLen = abs(recieveNode.yCoord - yCoord);
+
+	double sqrtLen = sqrt(pow(xLen, 2.0) + pow(yLen, 2.0));
+
+	return ceil(log(sqrtLen) / log(2));
+}
+
+/*
+ * Sai Kiran Vadlamudi  C05
+ * Hop this node
+ * 
+ * Parameters:
+ *	nodeVector: vector of the source, mule, and receiver nodes
+ *	length: length of the board
+ *	width: width of the board
+ *	
+ * Return:
+ *	void
+ */
 void Node::moveNode(vector<Node> nodeVector, int length, int width) {
 	this->nodeHop(length, width);
 	if (collisionCheck(nodeVector))
@@ -50,6 +83,17 @@ void Node::moveNode(vector<Node> nodeVector, int length, int width) {
 	}
 }
 
+/*
+ * Sai Kiran Vadlamudi  C05
+ * Move this node one spot in its current direction checking for edges
+ * 
+ * Parameters:
+ *	length: length of the board
+ *	width: width of the board
+ * 
+ * Return:
+ *	void
+ */
 void Node::nodeHop(int length, int width) {
 	
 	enum directionWord{East, West, North, South};
@@ -99,6 +143,16 @@ void Node::nodeHop(int length, int width) {
 	}
 }
 
+/*
+ * Sai Kiran Vadlamudi  C05
+ * Check for collisions after the move (node bounce)
+ * 
+ * Parameters:
+ *	nodeVector: vector of source, mule, and receiver nodes
+ *	
+ * Return:
+ *	void
+ */
 bool Node::collisionCheck(vector<Node> nodeVector) {
 	for (unsigned i = 0; i < nodeVector.size(); i++) {
 		if (nodeVector.at(i).direction == -1)
