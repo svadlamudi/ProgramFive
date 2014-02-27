@@ -3,14 +3,25 @@
 // Constructor
 Node::Node(int id, int xCoord, int yCoord, LinkListPacket queue, Node *next) {
 	this->id = id;
+	this->nodeType = "";
 	this->xCoord = xCoord;
 	this->yCoord = yCoord;
+	this->queue = queue;
+	this->direction = 0;
+	this->startTime = 0;
+	this->sendSize = 0;
+	this->sendRoute = *new vector<Node*>();
+	this->currentPacket = NULL;
+	this->sendNum = 0;
 	this->next = next;
 }
 
 // Accessors and Mutators
 int Node::getId() {
 	return this->id;
+}
+string Node::getNodeType() {
+	return this->nodeType;
 }
 int Node::getXCoord() {
 	return this->xCoord;
@@ -24,8 +35,20 @@ int Node::getDirection() {
 int Node::getStartTime() {
 	return this->startTime;
 }
+int Node::getSendNum() {
+	return this->sendNum;
+}
 int Node::getSendSize() {
 	return this->sendSize;
+}
+vector<Node*> Node::getSendRoute() {
+	return this->sendRoute;
+}
+Packet* Node::getCurrentPacket() {
+	return this->currentPacket;
+}
+LinkListPacket Node::getQueue() {
+	return this->queue;
 }
 Node * Node::getNext() {
 	return this->next;
@@ -33,6 +56,9 @@ Node * Node::getNext() {
 
 void Node::setId(int id) {
 	this->id = id;
+}
+void Node::setNodeType(string nodeType) {
+	this->nodeType = nodeType;
 }
 void Node::setXCoord(int xCoord) {
 	this->xCoord = xCoord;
@@ -46,14 +72,28 @@ void Node::setDirection(int direction) {
 void Node::setStartTime(int startTime) {
 	this->startTime = startTime;
 }
+void Node::setSendNum(int sendNum) {
+	this->sendNum = sendNum;
+}
 void Node::setSendSize(int sendSize) {
 	this->sendSize = sendSize;
+}
+void Node::setSendRoute(vector<Node*> sendRoute) {
+	this->sendRoute = sendRoute;
+}
+void Node::setCurrentPacket(Packet *currentPacket) {
+	this->currentPacket = currentPacket;
+}
+void Node::setQueue(LinkListPacket queue) {
+	this->queue = queue;
 }
 void Node::setNext(Node **next) {
 	this->next = *next;
 }
 
 // Object Functions
+
+
 
 /*
  * Sai Kiran Vadlamudi  C05
@@ -88,10 +128,10 @@ double Node::propogationTime(Node recieveNode) {
  *	void
  */
 void Node::moveNode(vector<Node> nodeVector, int length, int width) {
-	this->nodeHop(length, width);
+	nodeHop(length, width);
 	if (collisionCheck(nodeVector))
 	{
-		this->nodeHop(length, width);
+		nodeHop(length, width);
 	}
 }
 
@@ -184,4 +224,58 @@ bool Node::collisionCheck(vector<Node> nodeVector) {
 		}
 	}
 	return false;
+}
+
+void Node::beginSimulation(int TIME, int& numPacketReceieved, FILE *output) {
+	if (nodeType == "S" && TIME >= startTime && sendNum > 0)
+	{
+		if (currentPacket == NULL)
+		{
+			currentPacket = new Packet(&sendRoute, TIME, sendSize, 1, NULL);
+		} 
+		else if (TIME == currentPacket->getPacketTimes().at(0) + currentPacket->getPacketSize())
+		{
+			double arrivalTime = TIME + propogationTime(*(currentPacket->getPacketRoute().at(1)));
+			currentPacket->modifyPacketTimes(arrivalTime);
+			currentPacket->getPacketRoute().at(1)->queue.insert(currentPacket);
+
+			sendNum--;
+			currentPacket = new Packet(&sendRoute, TIME, sendSize, 1, NULL);
+		}
+	}
+	else if (nodeType == "M")
+	{
+		if (currentPacket == NULL)
+		{
+			currentPacket = queue.getNextNode();
+		}
+		else if (TIME >= currentPacket->getPacketTimes().at(currentPacket->getCurrentNode()) + currentPacket->getPacketSize() - 1)
+		{
+			currentPacket->setCurrentNode(1 + currentPacket->getCurrentNode());
+			double arrivalTime = TIME + propogationTime(*(currentPacket->getPacketRoute().at(currentPacket->getCurrentNode())));
+			currentPacket->modifyPacketTimes(arrivalTime);
+			currentPacket->getPacketRoute().at(currentPacket->getCurrentNode())->queue.insert(currentPacket);
+
+			currentPacket = queue.getNextNode();
+		}
+		else
+		{
+			queue.incrementWaitTime(TIME);
+		}
+	}
+	else if (nodeType == "R")
+	{
+		while (!queue.isEmpty())
+		{
+			currentPacket = queue.getNextNode();
+
+			if (currentPacket != NULL)
+			{
+				fprintf(output, "|%d|%3.2f|%3.2f|%3.2f|%d|\n", currentPacket->getPacketRoute().at(0)->getId(), currentPacket->getPacketTimes().at(1), currentPacket->getPacketTimes().at(2), currentPacket->getPacketTimes().at(3), currentPacket->getPacketRoute().at(4)->getId());
+				//printf("|%d|%3.2f|%3.2f|%3.2f|%d|\n", currentPacket->getPacketRoute().at(0)->getId(), currentPacket->getPacketTimes().at(1), currentPacket->getPacketTimes().at(2), currentPacket->getPacketTimes().at(3), currentPacket->getPacketRoute().at(4)->getId());
+
+				numPacketReceieved++;
+			}
+		}
+	}
 }

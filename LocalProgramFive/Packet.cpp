@@ -2,19 +2,20 @@
 #include <math.h>
 
 // Constructor
-Packet::Packet(vector<int> *packetRoute, vector<int> *packetTimes, int packetSize, int currentNode, Packet *next) {
+Packet::Packet(vector<Node *> *packetRoute, int creationTime, int packetSize, int currentNode, Packet *next) {
 	this->packetRoute = *packetRoute;
-	this->packetTimes = *packetTimes;
+	this->packetTimes = *new vector<double>(packetRoute->size());
+	this->packetTimes.at(0) = creationTime;
 	this->packetSize = packetSize;
 	this->currentNode = currentNode;
 	this->next = next;
 }
 
 // Accessors and Mutators
-vector<int> Packet::getPacketRoute() {
+vector<Node *> Packet::getPacketRoute() {
 	return this->packetRoute;
 }
-vector<int> Packet::getPacketTimes() {
+vector<double> Packet::getPacketTimes() {
 	return this->packetTimes;
 }
 int Packet::getPacketSize() {
@@ -27,10 +28,10 @@ Packet** Packet::getNext() {
 	return &(this->next);
 }
 
-void Packet::setPacketRoute(vector<int> packetRoute) {
+void Packet::setPacketRoute(vector<Node *> packetRoute) {
 	this->packetRoute = packetRoute;
 }
-void Packet::setPacketTimes(vector<int> packetTimes) {
+void Packet::setPacketTimes(vector<double> packetTimes) {
 	this->packetTimes = packetTimes;
 }
 void Packet::setPacketSize(int packetSize) {
@@ -44,3 +45,6 @@ void Packet::setNext(Packet *next) {
 }
 
 // Object Functions
+void Packet::modifyPacketTimes(double arrivalTime) {
+	this->packetTimes[currentNode] = arrivalTime;
+}

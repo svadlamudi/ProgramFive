@@ -19,6 +19,8 @@ class Board {
 		int getNumSources();
 		int getNumMules();
 		int getNumRecievers();
+		int getNumPacketSent();
+		int getNumPacketReceived();
 
 		void setBoardLayout(vector< vector<int> > boardLayout);
 		void setNodeVector(vector<Node> nodeVector);
@@ -27,14 +29,21 @@ class Board {
 		void setNumSources(int numSources);
 		void setNumMules(int numMules);
 		void setNumRecievers(int numRecievers);
+		void setNumPacketSent(int numPackets);
+		void setNumReceived();
 
 		// Object Functions
 		void createNodeVector();
 		void initializeBoard();
 		void generateRandomNodePos();
 		void setNodePos();
+		void printRow(FILE *output);
 		void printBoard(FILE *output);
+		void printTable(FILE *output);
+		void findSet(int id, int startTime, int sendNum, int sendSize, vector<int> sendRoute);
 		void moveNodes();
+		void totalNumPackets(string set);
+		void runSimulation(FILE *output);
 
 	private:
 		vector< vector<int> > boardLayout;
@@ -44,6 +53,8 @@ class Board {
 		int numSources;
 		int numMules;
 		int numRecievers;
+		int numPacketSent;
+		int numPacketReceieved;
 };
 
 #endif

@@ -5,39 +5,55 @@ using namespace std;
 
 int main(const int argc, const char* argv[]) {
 
-	srand(time(NULL));
+	srand((unsigned)time(NULL));
 
 	if (argc == 5)
 	{
+		int id = 0, startTime = 0, sendNum = 0, sendSize = 0, routeSize = 0, routeId = 0;
 		FILE *output;
+		FILE *input;
 		output = fopen("packetsim.txt", "w");
+		input = fopen("sourcenodelist.txt", "r");
 
-		if (output != NULL) {
-			vector<int> One(1, 0);
-			vector<int> Route(1, 4);
+		if (output != NULL && input != NULL) {
+			// Set-up Board
+			Board manetMap = *new Board(atoi(argv[4]), atoi(argv[4]) + 2, *new vector<Node>(), atoi(argv[1]), atoi(argv[3]), atoi(argv[2]));
+			manetMap.createNodeVector();
+			manetMap.initializeBoard();
+			manetMap.generateRandomNodePos();
+			manetMap.setNodePos();
+			manetMap.printBoard(output);
 
-			vector<int> Two(1, 1);
-			vector<int> RouteTwo(1, 5);
+			//for (int i = 0; i < atoi(argv[1]); i++)
+			for (int i = 0; i < 1; i++)
+			{
+				fscanf(input, "%d %d %d %d %d", &id, &startTime, &sendNum, &sendSize, &routeSize);
+				vector<int> temp = *new vector<int>();
+				for (int j = 0; j < routeSize; j++)
+				{
+					fscanf(input, "%d", &routeId);
+					temp.push_back(routeId);
+				}
+				manetMap.findSet(id, startTime, sendNum, sendSize, temp);
+			}
 
-			LinkListPacket *mOne = new LinkListPacket();
-			mOne->insert(&Route, &One);
-			mOne->insert(&RouteTwo, &Two);
-
-			mOne->printList(output);
-
-			mOne->getNextNode();
-
-			mOne->printList(output);
+			manetMap.totalNumPackets("S");
+			manetMap.runSimulation(output);
 
 			return 0;
 		}
 		else {
-			printf("Output File couldn't be opened");
+			
+			if (output == NULL)
+				printf("Output File couldn't be opened");
+			else
+				printf("Input File couldn't be opened");
+
 			return 1;
 		}
 	}
 	else {
-		printf("Incorrect Usage! Usage is ./prog5 #_of_sources #_of_recievers #_of_mules deimension");
+		printf("Incorrect Usage! Usage is ./prog5 #_of_sources #_of_recievers #_of_mules dimension");
 		return 1;
 	}
 }

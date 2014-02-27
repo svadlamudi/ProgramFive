@@ -36,11 +36,10 @@ void LinkListPacket::setListId(int listId) {
  * Return:
  *	void
  */
-void LinkListPacket::insert(vector<int> *packetRoute, vector<int> *packetTimes) {
+void LinkListPacket::insert(Packet *newPacket) {
 	Packet **temp = &(this->listHead);
-	Packet *newPacket = new Packet(packetRoute, packetTimes);
 	
-	while (*temp != NULL && !packetTimes->empty())
+	while (*temp != NULL && !(newPacket->getPacketTimes()).empty())
 	{
 		if ((*temp)->getPacketTimes().at((*temp)->getCurrentNode()) > newPacket->getPacketTimes().at(newPacket->getCurrentNode()))
 		{
@@ -56,7 +55,46 @@ void LinkListPacket::insert(vector<int> *packetRoute, vector<int> *packetTimes) 
 
 /*
  * Sai Kiran Vadlamudi  C05
- * Return the first node in the list
+ * Return true if this list is empty
+ * 
+ * Parameters:
+ *	None
+ *
+ * Return:
+ *	bool
+ */
+bool LinkListPacket::isEmpty() {
+	if (listHead == NULL)
+		return true;
+	else
+		return false;
+}
+
+/*
+ * Sai Kiran Vadlamudi  C05
+ * Increment the arrival time of the packets waiting in the queue
+ * 
+ * Parameters:
+ *	TIME: current time of the simulation
+ *	
+ * Return:
+ *	void
+ */
+void LinkListPacket::incrementWaitTime(int TIME) {
+	
+	Packet *temp = this->listHead;
+	
+	while (temp != NULL && TIME > temp->getPacketTimes().at(temp->getCurrentNode()))
+	{
+		temp->modifyPacketTimes(temp->getPacketTimes().at(temp->getCurrentNode()) + 1);
+
+		temp = *temp->getNext();
+	}
+}
+
+/*
+ * Sai Kiran Vadlamudi  C05
+ * Return the first node in the list. NULL if list is empty.
  *
  * Parameters:
  *	None
@@ -109,6 +147,6 @@ void LinkListPacket::printList(FILE *output) {
 		temp = *(temp->getNext());
 	}
 
-	fprintf(output, "\n");
+	output != NULL ? fprintf(output, "\n") : printf("Invalid Output File Pointer - printList()");
 }
 

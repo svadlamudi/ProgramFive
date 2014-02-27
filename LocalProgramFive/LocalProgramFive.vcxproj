@@ -15,7 +15,6 @@
     <ClInclude Include="LinkListPacket.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Node.h" />
-    <ClInclude Include="NodeMap.h" />
     <ClInclude Include="Packet.h" />
   </ItemGroup>
   <ItemGroup>
@@ -23,11 +22,12 @@
     <ClCompile Include="LinkListPacket.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Node.cpp" />
-    <ClCompile Include="NodeMap.cpp" />
     <ClCompile Include="Packet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="packetsim.txt" />
+    <Text Include="prog5.txt" />
+    <Text Include="sourcenodelist.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CD2D49F0-5954-4F0C-9E92-62171EC30D39}</ProjectGuid>
@@ -70,7 +70,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
