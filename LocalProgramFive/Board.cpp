@@ -9,8 +9,6 @@ Board::Board(int length, int width, vector<Node> nodeVector, int numSources, int
 	this->numSources = numSources;
 	this->numMules = numMules;
 	this->numRecievers = numRecievers;
-	this->numPacketSent = 0;
-	this->numPacketReceieved = 0;
 }
 
 // Accessors and Mutators
@@ -28,12 +26,6 @@ int Board::getNumMules() {
 }
 int Board::getNumRecievers() {
 	return this->numRecievers;
-}
-int Board::getNumPacketSent() {
-	return this->numPacketSent;
-}
-int Board::getNumPacketReceived() {
-	return this->numPacketReceieved;
 }
 
 void Board::setBoardLayout(vector< vector<int> > boardLayout) {
@@ -197,13 +189,13 @@ void Board::printBoard(FILE *output) {
 		fprintf(output, "|");
 		for (unsigned j = 0; j < this->boardLayout.at(i).size(); j++)
 		{
-			if (j == 0) {
+			if (j == (unsigned) 0) {
 				if ((this->boardLayout.at(i)).at(j) == 0)
 					fprintf(output, "   |");
 				else
 					fprintf(output, "%3d|", (this->boardLayout.at(i)).at(j));
 			}				
-			else if (j == width-1)
+			else if (j == (unsigned) width-1)
 				if ((this->boardLayout.at(i)).at(j) == 0)
 					fprintf(output, "|   ");
 				else
@@ -308,7 +300,7 @@ void Board::moveNodes() {
  * Return:
  *	void
  */
-void Board::totalNumPackets(string set) {
+void Board::totalNumPackets(string set, int& numPacketSent, int& numPacketReceieved) {
 	
 	int tempCounter = 0;
 
@@ -343,7 +335,8 @@ void Board::totalNumPackets(string set) {
 void Board::runSimulation(FILE *output) {
 	
 	int TIME = 0;
-	int numPacketReceieved = 0;
+	int numPacketSent = 0, numPacketReceieved = 0;
+	totalNumPackets("S", numPacketSent, numPacketReceieved);
 
 	while (numPacketReceieved < numPacketSent)
 	{

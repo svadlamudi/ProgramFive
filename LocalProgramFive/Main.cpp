@@ -3,20 +3,25 @@
 
 using namespace std;
 
+/*
+ * Main
+ *	Driver function
+ */
 int main(const int argc, const char* argv[]) {
 
 	srand((unsigned)time(NULL));
 
-	if (argc == 5)
+	if (argc == 6)
 	{
+		// 
 		int id = 0, startTime = 0, sendNum = 0, sendSize = 0, routeSize = 0, routeId = 0;
 		FILE *output;
 		FILE *input;
 		output = fopen("packetsim.txt", "w");
-		input = fopen("sourcenodelist.txt", "r");
+		input = fopen(argv[5], "r");
 
 		if (output != NULL && input != NULL) {
-			// Set-up Board
+			// Set-up, Randomize, and print board for first time
 			Board manetMap = *new Board(atoi(argv[4]), atoi(argv[4]) + 2, *new vector<Node>(), atoi(argv[1]), atoi(argv[3]), atoi(argv[2]));
 			manetMap.createNodeVector();
 			manetMap.initializeBoard();
@@ -24,28 +29,34 @@ int main(const int argc, const char* argv[]) {
 			manetMap.setNodePos();
 			manetMap.printBoard(output);
 
-			//for (int i = 0; i < atoi(argv[1]); i++)
-			for (int i = 0; i < 1; i++)
+			// Read in the source node info
+			for (int i = 0; i < atoi(argv[1]); i++)
 			{
+				// Read in the first five properties of the source node in the current line 
 				fscanf(input, "%d %d %d %d %d", &id, &startTime, &sendNum, &sendSize, &routeSize);
+				
+				// Create a vector of ids of mule nodes along the route
 				vector<int> temp = *new vector<int>();
 				for (int j = 0; j < routeSize; j++)
 				{
 					fscanf(input, "%d", &routeId);
 					temp.push_back(routeId);
 				}
+
+				// Add the input properties to the source node matching the given id
 				manetMap.findSet(id, startTime, sendNum, sendSize, temp);
 			}
 
-			manetMap.totalNumPackets("S");
+			// Run simulation
 			manetMap.runSimulation(output);
 
 			return 0;
 		}
 		else {
-			
+			// Output file corrupted
 			if (output == NULL)
 				printf("Output File couldn't be opened");
+			// Input file corrupted
 			else
 				printf("Input File couldn't be opened");
 
@@ -53,7 +64,7 @@ int main(const int argc, const char* argv[]) {
 		}
 	}
 	else {
-		printf("Incorrect Usage! Usage is ./prog5 #_of_sources #_of_recievers #_of_mules dimension");
+		printf("Incorrect Usage! Usage is ./prog5 #_of_sources #_of_recievers #_of_mules dimension input_file\n\n");
 		return 1;
 	}
 }

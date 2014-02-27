@@ -12,7 +12,7 @@ using namespace std;
 class Node {
 	public:
 		// Constructor
-		Node(int id = -1, int xCoord = -1, int yCoord = -1, LinkListPacket queue = *new LinkListPacket(), Node *next = NULL);
+		Node(int id = -1, int xCoord = -1, int yCoord = -1, LinkListPacket queue = *new LinkListPacket());
 
 		// Accessors and Mutators
 		int getId();
@@ -26,7 +26,6 @@ class Node {
 		vector<Node*> getSendRoute();
 		Packet* getCurrentPacket();
 		LinkListPacket getQueue();
-		Node * getNext();
 
 		void setId(int id);
 		void setNodeType(string nodeType);
@@ -39,7 +38,6 @@ class Node {
 		void setSendRoute(vector<Node*> sendRoute);
 		void setCurrentPacket(Packet *currentPacket);
 		void setQueue(LinkListPacket queue);
-		void setNext(Node **next);
 
 		// Object Functions
 		double propogationTime(Node recieveNode);
@@ -60,7 +58,6 @@ class Node {
 		vector<Node*> sendRoute;
 		Packet *currentPacket;
 		LinkListPacket queue;
-		Node *next;
 };
 
 #endif

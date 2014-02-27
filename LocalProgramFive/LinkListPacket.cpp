@@ -26,7 +26,7 @@ void LinkListPacket::setListId(int listId) {
 // Object Functions
 
 /*
- * Sai Kiran Vadlamudi  C05
+ * Jordan Feeley  C05
  * Create and Add new node to list
  *
  * Parameters:
@@ -54,7 +54,7 @@ void LinkListPacket::insert(Packet *newPacket) {
 }
 
 /*
- * Sai Kiran Vadlamudi  C05
+ * Jordan Feeley  C05
  * Return true if this list is empty
  * 
  * Parameters:
@@ -71,7 +71,7 @@ bool LinkListPacket::isEmpty() {
 }
 
 /*
- * Sai Kiran Vadlamudi  C05
+ * Jordan Feeley  C05
  * Increment the arrival time of the packets waiting in the queue
  * 
  * Parameters:
@@ -93,7 +93,7 @@ void LinkListPacket::incrementWaitTime(int TIME) {
 }
 
 /*
- * Sai Kiran Vadlamudi  C05
+ * Jordan Feeley  C05
  * Return the first node in the list. NULL if list is empty.
  *
  * Parameters:
@@ -114,39 +114,5 @@ Packet * LinkListPacket::getNextNode() {
 	}
 }
 
-/*
- * Sai Kiran Vadlamudi  C05
- * Print the activating list
- *
- * Parameters:
- *	None
- *
- * Return:
- *	void
- */
-void LinkListPacket::printList(FILE *output) {
-	Packet *temp = this->listHead;
 
-	while (temp != NULL && output != NULL)
-	{
-		fprintf(output, "| Source: ");
-		for (unsigned i = 0; i < temp->getPacketRoute().size(); i++)
-		{
-			fprintf(output, "%3d", temp->getPacketRoute().at(i));
-		}
-		fprintf(output, " |");
-
-		fprintf(output, " Times: ");
-		for (unsigned i = 0; i < temp->getPacketTimes().size(); i++)
-		{
-			fprintf(output, "%3d", temp->getPacketTimes().at(i));
-		}
-
-		fprintf(output, " |\n");
-
-		temp = *(temp->getNext());
-	}
-
-	output != NULL ? fprintf(output, "\n") : printf("Invalid Output File Pointer - printList()");
-}
 

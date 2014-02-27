@@ -1,7 +1,7 @@
 #include "Node.h"
 
 // Constructor
-Node::Node(int id, int xCoord, int yCoord, LinkListPacket queue, Node *next) {
+Node::Node(int id, int xCoord, int yCoord, LinkListPacket queue) {
 	this->id = id;
 	this->nodeType = "";
 	this->xCoord = xCoord;
@@ -13,7 +13,6 @@ Node::Node(int id, int xCoord, int yCoord, LinkListPacket queue, Node *next) {
 	this->sendRoute = *new vector<Node*>();
 	this->currentPacket = NULL;
 	this->sendNum = 0;
-	this->next = next;
 }
 
 // Accessors and Mutators
@@ -50,9 +49,6 @@ Packet* Node::getCurrentPacket() {
 LinkListPacket Node::getQueue() {
 	return this->queue;
 }
-Node * Node::getNext() {
-	return this->next;
-}
 
 void Node::setId(int id) {
 	this->id = id;
@@ -87,9 +83,6 @@ void Node::setCurrentPacket(Packet *currentPacket) {
 void Node::setQueue(LinkListPacket queue) {
 	this->queue = queue;
 }
-void Node::setNext(Node **next) {
-	this->next = *next;
-}
 
 // Object Functions
 
@@ -116,7 +109,7 @@ double Node::propogationTime(Node recieveNode) {
 }
 
 /*
- * Sai Kiran Vadlamudi  C05
+ * Jordan Feeley  C05
  * Hop this node
  * 
  * Parameters:
@@ -136,7 +129,7 @@ void Node::moveNode(vector<Node> nodeVector, int length, int width) {
 }
 
 /*
- * Sai Kiran Vadlamudi  C05
+ * Jordan Feeley  C05
  * Move this node one spot in its current direction checking for edges
  * 
  * Parameters:
@@ -196,7 +189,7 @@ void Node::nodeHop(int length, int width) {
 }
 
 /*
- * Sai Kiran Vadlamudi  C05
+ * Jordan Feeley  C05
  * Check for collisions after the move (node bounce)
  * 
  * Parameters:
@@ -226,6 +219,18 @@ bool Node::collisionCheck(vector<Node> nodeVector) {
 	return false;
 }
 
+/*
+ * Sai Kiran Vadlamudi  C05
+ * Run simulation on this node
+ * 
+ * Parameters:
+ *	TIME: current time in the simulation
+ *	numPacketRecieved: total number of packets received in the simulation
+ *	output: pointer to the output file
+ *	
+ *	Return:
+ *	 void
+ */
 void Node::beginSimulation(int TIME, int& numPacketReceieved, FILE *output) {
 	if (nodeType == "S" && TIME >= startTime && sendNum > 0)
 	{
@@ -271,9 +276,12 @@ void Node::beginSimulation(int TIME, int& numPacketReceieved, FILE *output) {
 
 			if (currentPacket != NULL)
 			{
-				fprintf(output, "|%d|%3.2f|%3.2f|%3.2f|%d|\n", currentPacket->getPacketRoute().at(0)->getId(), currentPacket->getPacketTimes().at(1), currentPacket->getPacketTimes().at(2), currentPacket->getPacketTimes().at(3), currentPacket->getPacketRoute().at(4)->getId());
-				//printf("|%d|%3.2f|%3.2f|%3.2f|%d|\n", currentPacket->getPacketRoute().at(0)->getId(), currentPacket->getPacketTimes().at(1), currentPacket->getPacketTimes().at(2), currentPacket->getPacketTimes().at(3), currentPacket->getPacketRoute().at(4)->getId());
-
+				fprintf(output, "|%d|", currentPacket->getPacketRoute().at(0)->getId());
+				for (unsigned i = 1; i < currentPacket->getPacketTimes().size()-1; i++)
+				{
+					fprintf(output, "%4.2f|", currentPacket->getPacketTimes().at(i));
+				}
+				fprintf(output, "%d|\n", currentPacket->getPacketRoute().at(currentPacket->getPacketRoute().size() - 1)->getId());
 				numPacketReceieved++;
 			}
 		}

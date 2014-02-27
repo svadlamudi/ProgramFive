@@ -45,6 +45,17 @@ void Packet::setNext(Packet *next) {
 }
 
 // Object Functions
+
+/*
+ * Jordan Feeley  C05
+ * Modify the time at the currentNode in the packetTimes to given time
+ * 
+ * Parameters:
+ *	arrivalTime: the new arrival time
+ *	
+ * Return:
+ *	void
+ */
 void Packet::modifyPacketTimes(double arrivalTime) {
 	this->packetTimes[currentNode] = arrivalTime;
 }
