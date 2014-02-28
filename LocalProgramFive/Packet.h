@@ -14,10 +14,10 @@ class Packet {
 		Packet(vector<Node*> *packetRoute = new vector<Node*>(), int creationTime = 0, int packetSize = 0, int currentNode = 1, Packet *next = NULL);
 
 		// Accessors and Mutators
-		vector<Node*> getPacketRoute();
-		vector<double> getPacketTimes();
-		int getCurrentNode();
-		int getPacketSize();
+		vector<Node*> getPacketRoute() const;
+		vector<double> getPacketTimes() const;
+		int getCurrentNode() const;
+		int getPacketSize() const;
 		Packet** getNext();
 
 		void setPacketRoute(vector<Node*> packetRoute);

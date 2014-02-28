@@ -21,6 +21,11 @@ int main(const int argc, const char* argv[]) {
 		input = fopen(argv[5], "r");
 
 		if (output != NULL && input != NULL) {
+			// Print heading and output format
+			fprintf(output, "Name: Jordan Feeley        Section: C05\n");
+			fprintf(output, "Name: Sai Kiran Vadlamudi  Section: C05\n\n");
+			fprintf(output, "| Source: Arrival Time | All Mules: All Arrival Times | Receiver: Arrival Time\n\n");
+			
 			// Set-up, Randomize, and print board for first time
 			Board manetMap = *new Board(atoi(argv[4]), atoi(argv[4]) + 2, *new vector<Node>(), atoi(argv[1]), atoi(argv[3]), atoi(argv[2]));
 			manetMap.createNodeVector();
@@ -55,10 +60,10 @@ int main(const int argc, const char* argv[]) {
 		else {
 			// Output file corrupted
 			if (output == NULL)
-				printf("Output File couldn't be opened");
+				printf("Output File couldn't be opened\n\n");
 			// Input file corrupted
 			else
-				printf("Input File couldn't be opened");
+				printf("Input File couldn't be opened\n\n");
 
 			return 1;
 		}

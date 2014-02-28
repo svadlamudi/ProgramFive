@@ -10,13 +10,11 @@ using namespace std;
 class LinkListPacket {
 	public:
 		// Constructor
-		LinkListPacket(Packet* listHead = NULL, int listId = 0);
+		LinkListPacket(Packet* listHead = NULL);
 
 		// Accessors and Mutators
 		Packet** getListHead();
-		int getListId();
 		void setListHead(Packet **listHead);
-		void setListId(int listId);
 
 		// Object Functions
 		void insert(Packet *newPacket);
@@ -27,7 +25,6 @@ class LinkListPacket {
 
 	private:
 		Packet *listHead;
-		int listId;
 };
 
 #endif

@@ -2,25 +2,32 @@
 
 using namespace std;
 
-// Constructor
-LinkListPacket::LinkListPacket(Packet *listHead, int listId) {
+// Constructors
+
+/*
+ * Jordan Feeley  C05
+ * Create and return a pointer to new LinkListPacket object
+ * 
+ * Parameters:
+ *	listHead: pointer to the head of the linked list of Packets
+ *	
+ * Return:
+ *	LinkListPacket*
+ */
+LinkListPacket::LinkListPacket(Packet *listHead) {
 	this->listHead = listHead;
-	this->listId = listId;
 }
 
 // Accessors and Mutators
+
+/* Return a pointer to the head of this LinkListPacket */
 Packet ** LinkListPacket::getListHead() {
 	return &(this->listHead);
 }
-int LinkListPacket::getListId() {
-	return this->listId;
-}
 
+/* Set the head of this LinkListPacket to the dereferenced pointer of the given double pointer to a Packet */
 void LinkListPacket::setListHead(Packet **listHead) {
 	this->listHead = *listHead;
-}
-void LinkListPacket::setListId(int listId) {
-	this->listId = listId;
 }
 
 // Object Functions

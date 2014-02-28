@@ -1,6 +1,22 @@
 #include "Board.h"
 
-// Constructor
+// Constructors
+
+/*
+ * Sai Kiran Vadlamudi  C05
+ * Constructor and return a pointer to new Board object
+ * 
+ * Parameters:
+ *	length: length, height, of the board
+ *	width: width of the board including the two columns of sources and receivers
+ *	nodeVector: vector of source, mule, and receiver nodes
+ *	numSources: number of sources in the simulation
+ *	numMules: number of mules in the simulation
+ *	numRecievers: number of receivers in the simulation
+ *	
+ * Return:
+ *	Board*	
+ */
 Board::Board(int length, int width, vector<Node> nodeVector, int numSources, int numMules, int numRecievers) {
 	this->boardLayout = vector< vector<int> >(length, vector<int>(width));
 	this->nodeVector = nodeVector;
@@ -12,34 +28,47 @@ Board::Board(int length, int width, vector<Node> nodeVector, int numSources, int
 }
 
 // Accessors and Mutators
-vector< vector<int> > Board::getBoardLayout() {
+
+/* Return the 2D vector of integers, node ids or 0 , of this Board */
+vector< vector<int> > Board::getBoardLayout() const {
 	return this->boardLayout;
 }
-vector<Node> Board::getNodeVector() {
+
+/* Return the vector of nodes in this Board */
+vector<Node> Board::getNodeVector() const {
 	return this->nodeVector;
 }
-int Board::getNumSources() {
+
+/* Return the number of sources in this Board */
+int Board::getNumSources() const {
 	return this->numSources;
 }
-int Board::getNumMules() {
+/* Return the number of sources in this Board */
+int Board::getNumMules() const {
 	return this->numMules;
 }
-int Board::getNumRecievers() {
+/* Return the number of receivers in this Board */
+int Board::getNumRecievers() const{
 	return this->numRecievers;
 }
 
+/* Set the 2D vector of integers of this Board to the given vector */
 void Board::setBoardLayout(vector< vector<int> > boardLayout) {
 	this->boardLayout = boardLayout;
 }
+/* Set the vector of nodes in this Board to the given vector */
 void Board::setNodeVector(vector<Node> nodeVector) {
 	this->nodeVector = nodeVector;
 }
+/* Set the numSources in this Board to the given integer */
 void Board::setNumSources(int numSources) {
 	this->numSources = numSources;
 }
+/* Set the numMules in this Board to the given integer */
 void Board::setNumMules(int numMules) {
 	this->numMules = numMules;
 }
+/* Set the numRecievers in this Board to the given integer */
 void Board::setNumRecievers(int numRecievers) {
 	this->numRecievers = numRecievers;
 }
@@ -71,7 +100,7 @@ void Board::createNodeVector() {
 
 /*
  * Sai Kiran Vadlamudi  C05
- * Initialize the board with all 0s
+ * Initialize this board with all 0s
  * 
  * Parameters:
  *	None
@@ -136,7 +165,7 @@ void Board::generateRandomNodePos() {
 
 /*
  * Sai Kiran Vadlamudi  C05
- * Set the positions of the nodes on the board
+ * Set the positions of the Nodes on the board
  * 
  * Parameters:
  *	None
@@ -175,7 +204,7 @@ void Board::printRow(FILE *output) {
 
 /*
  * Sai Kiran Vadlamudi  C05
- * Print the board
+ * Print this Board
  * 
  * Parameters:
  *	output: pointer to the output file
@@ -214,7 +243,7 @@ void Board::printBoard(FILE *output) {
 
 /*
  * Sai Kiran Vadlamudi  C05
- * Print the table of node positions
+ * Print the table of Node positions
  * 
  * Parameters:
  *	None
@@ -243,34 +272,31 @@ void Board::printTable(FILE *output) {
 	}
 }
 
+/*
+ * Sai Kiran Vadlamudi  C05
+ * Find the Node with the given id and set the given Node properties to that Node
+ * 
+ * Parameters:
+ *	id: id of the Node to find
+ *	startTime: time found Node starts sending Packets
+ *	sendNum: number of Packets to send by found Node
+ *	sendSize: size of Packets to send by found Node
+ *	sendRoute: vector of integer id by which found Node sends Packets
+ *	
+ * Return:
+ *	void
+ */
 void Board::findSet(int id, int startTime, int sendNum, int sendSize, vector<int> sendRoute) {
-	for (unsigned i = 1; i < nodeVector.size(); i++)
+	nodeVector.at(id).setStartTime(startTime);
+	nodeVector.at(id).setSendNum(sendNum);
+	nodeVector.at(id).setSendNumBkp(sendNum);
+	nodeVector.at(id).setSendSize(sendSize);
+	vector<Node*> temp = *new vector<Node *>(sendRoute.size());
+	for (unsigned i = 0; i < sendRoute.size(); i++)
 	{
-		if (nodeVector.at(i).getId() == id)
-		{
-			nodeVector.at(i).setStartTime(startTime);
-			nodeVector.at(i).setSendNum(sendNum);
-			nodeVector.at(i).setSendSize(sendSize);
-			vector<Node*> temp = *new vector<Node *>(sendRoute.size());
-			for (unsigned j = 0; j < sendRoute.size(); j++)
-			{
-				for (unsigned k = 0; k < nodeVector.size(); k++)
-				{
-					if (sendRoute.at(j) == nodeVector.at(k).getId())
-					{
-						temp.at(j) = &nodeVector.at(k);
-						break;
-					}
-				}
-			}
-			nodeVector.at(i).setSendRoute(temp);
-			break;
-		} 
-		else
-		{
-			continue;
-		}
+		temp.at(i) = &nodeVector.at(sendRoute.at(i));
 	}
+	nodeVector.at(id).setSendRoute(temp);
 }
 
 /*
@@ -336,13 +362,14 @@ void Board::runSimulation(FILE *output) {
 	
 	int TIME = 0;
 	int numPacketSent = 0, numPacketReceieved = 0;
+	double totalDelayTime = 0;
 	totalNumPackets("S", numPacketSent, numPacketReceieved);
 
 	while (numPacketReceieved < numPacketSent)
 	{
 		for (unsigned i = 1; i < nodeVector.size(); i++)
 		{
-			nodeVector.at(i).beginSimulation(TIME, numPacketReceieved, output);
+			nodeVector.at(i).beginSimulation(TIME, numPacketReceieved, nodeVector, output);
 		}
 	
 		if (TIME > 0 && TIME % 10 == 0)
@@ -355,4 +382,16 @@ void Board::runSimulation(FILE *output) {
 
 		TIME++;
 	}	
+
+	fprintf(output, "\n\n-------------------------------------------- Simulation Results Below --------------------------------------------------\n\n");
+	printBoard(output);
+	fprintf(output, "\n");
+	for (unsigned i = numSources + numMules + 1; i < nodeVector.size(); i++)
+	{
+		fprintf(output, "| Receiver ID: %3d | Sum Delay Time: %7d | Packets Received: %4d | Mean Delay: %4.2f |\n", nodeVector.at(i).getId(), nodeVector.at(i).getSumDelayTime(), nodeVector.at(i).getSendNum(), nodeVector.at(i).getSendNum() != 0 ? ((float)nodeVector.at(i).getSumDelayTime()) / nodeVector.at(i).getSendNum() : 0000.00);
+		totalDelayTime += ((float)nodeVector.at(i).getSumDelayTime());
+	}
+	fprintf(output, "\nOverall Mean Delay Time: %4.2f\n", totalDelayTime / numPacketReceieved);
+	fprintf(output, "Final Simulation Time: %d\n", TIME);
+	fprintf(output, "Total # of Packets Processed: %d\n", numPacketReceieved);
 }

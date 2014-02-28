@@ -15,15 +15,17 @@ class Node {
 		Node(int id = -1, int xCoord = -1, int yCoord = -1, LinkListPacket queue = *new LinkListPacket());
 
 		// Accessors and Mutators
-		int getId();
-		string getNodeType();
-		int getXCoord();
-		int getYCoord();
-		int getDirection();
-		int getStartTime();
-		int getSendNum();
-		int getSendSize();
-		vector<Node*> getSendRoute();
+		int getId() const;
+		string getNodeType() const;
+		int getXCoord() const;
+		int getYCoord() const;
+		int getDirection() const;
+		int getStartTime() const;
+		int getSendNum() const;
+		int getSumDelayTime() const;
+		int getSendNumBkp() const;
+		int getSendSize() const;
+		vector<Node*> getSendRoute() const;
 		Packet* getCurrentPacket();
 		LinkListPacket getQueue();
 
@@ -34,6 +36,8 @@ class Node {
 		void setDirection(int direction);
 		void setStartTime(int startTime);
 		void setSendNum(int sendNum);
+		void setSumDelayTime(int sumDelayTime);
+		void setSendNumBkp(int sendNumBkp);
 		void setSendSize(int sendSize);
 		void setSendRoute(vector<Node*> sendRoute);
 		void setCurrentPacket(Packet *currentPacket);
@@ -44,7 +48,7 @@ class Node {
 		void moveNode(vector<Node> nodeVector, int length, int width);
 		void nodeHop(int length, int width);
 		bool collisionCheck(vector<Node> nodeVector);
-		void beginSimulation(int TIME, int& numPacketReceived, FILE *output);
+		void beginSimulation(int TIME, int& numPacketReceived, vector<Node> nodeVector, FILE *output);
 		
 	private:
 		int id;
@@ -54,6 +58,8 @@ class Node {
 		int direction;
 		int startTime;
 		int sendNum;
+		int sumDelayTime;
+		int sendNumBkp;
 		int sendSize;
 		vector<Node*> sendRoute;
 		Packet *currentPacket;

@@ -12,13 +12,13 @@ class Board {
 		Board(int length = 0, int width = 0, vector<Node> nodeVector = *new vector<Node>(), int numSources = 0, int numMules = 0, int numRecievers = 0);
 
 		// Accessors and Mutators
-		vector< vector<int> > getBoardLayout();
-		vector<Node> getNodeVector();
-		int getLength();
-		int getWidth();
-		int getNumSources();
-		int getNumMules();
-		int getNumRecievers();
+		vector< vector<int> > getBoardLayout() const;
+		vector<Node> getNodeVector() const;
+		int getLength() const;
+		int getWidth() const;
+		int getNumSources() const;
+		int getNumMules() const;
+		int getNumRecievers() const;
 
 		void setBoardLayout(vector< vector<int> > boardLayout);
 		void setNodeVector(vector<Node> nodeVector);
