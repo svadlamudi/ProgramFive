@@ -388,7 +388,7 @@ void Board::runSimulation(FILE *output) {
 	fprintf(output, "\n");
 	for (unsigned i = numSources + numMules + 1; i < nodeVector.size(); i++)
 	{
-		fprintf(output, "| Receiver ID: %3d | Sum Delay Time: %7d | Packets Received: %4d | Mean Delay: %4.2f |\n", nodeVector.at(i).getId(), nodeVector.at(i).getSumDelayTime(), nodeVector.at(i).getSendNum(), nodeVector.at(i).getSendNum() != 0 ? nodeVector.at(i).getSumDelayTime() / nodeVector.at(i).getSendNum() : 0.00);
+		fprintf(output, "| Receiver ID: %3d | Sum Delay Time: %7.0d | Packets Received: %4d | Mean Delay: %4.2f |\n", nodeVector.at(i).getId(), nodeVector.at(i).getSumDelayTime(), nodeVector.at(i).getSendNum(), nodeVector.at(i).getSendNum() != 0 ? nodeVector.at(i).getSumDelayTime() / nodeVector.at(i).getSendNum() : 0.00);
 		totalDelayTime += (nodeVector.at(i).getSumDelayTime());
 	}
 	fprintf(output, "\nOverall Mean Delay Time: %4.2f\n", totalDelayTime / numPacketReceieved);
