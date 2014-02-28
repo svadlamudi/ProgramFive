@@ -22,7 +22,7 @@ class Node {
 		int getDirection() const;
 		int getStartTime() const;
 		int getSendNum() const;
-		int getSumDelayTime() const;
+		double getSumDelayTime() const;
 		int getSendNumBkp() const;
 		int getSendSize() const;
 		vector<Node*> getSendRoute() const;
@@ -36,7 +36,7 @@ class Node {
 		void setDirection(int direction);
 		void setStartTime(int startTime);
 		void setSendNum(int sendNum);
-		void setSumDelayTime(int sumDelayTime);
+		void setSumDelayTime(double sumDelayTime);
 		void setSendNumBkp(int sendNumBkp);
 		void setSendSize(int sendSize);
 		void setSendRoute(vector<Node*> sendRoute);
@@ -58,7 +58,7 @@ class Node {
 		int direction;
 		int startTime;
 		int sendNum;
-		int sumDelayTime;
+		double sumDelayTime;
 		int sendNumBkp;
 		int sendSize;
 		vector<Node*> sendRoute;

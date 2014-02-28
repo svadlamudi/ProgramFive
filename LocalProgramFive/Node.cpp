@@ -62,7 +62,7 @@ int Node::getSendNum() const {
 	return this->sendNum;
 }
 /* Return the sum of the delay times of all packets sent by this Node */
-int Node::getSumDelayTime() const {
+double Node::getSumDelayTime() const {
 	return this->sumDelayTime;
 }
 /* Return this Node num of Packets to be sent */
@@ -127,7 +127,7 @@ void Node::setSendNum(int sendNum) {
 	this->sendNum = sendNum;
 }
 /* Set this Node total delay time of all packets to given int */
-void Node::setSumDelayTime(int sumDelayTime) {
+void Node::setSumDelayTime(double sumDelayTime) {
 	this->sumDelayTime = sumDelayTime;
 }
 /* Set this Node number of Packets to be sent backup to given int */
@@ -354,7 +354,7 @@ void Node::beginSimulation(int TIME, int& numPacketReceieved, vector<Node> nodeV
 				}
 				fprintf(output, "%d: %4.2f |\n", currentPacket->getPacketRoute().at(currentPacket->getPacketRoute().size() - 1)->getId(), currentPacket->getPacketTimes().at(currentPacket->getPacketTimes().size() - 1));
 				
-				int delayTime = currentPacket->getPacketTimes().at(currentPacket->getPacketTimes().size() - 1) - currentPacket->getPacketTimes().at(0);
+				double delayTime = currentPacket->getPacketTimes().at(currentPacket->getPacketTimes().size() - 1) - currentPacket->getPacketTimes().at(0);
 				sendNum++;
 				sumDelayTime += delayTime;
 
