@@ -27,6 +27,7 @@ Node::Node(int id, int xCoord, int yCoord, LinkListPacket queue) {
 	this->sendNum = 0;
 	this->sendNumBkp = 0;
 	this->sumDelayTime = 0;
+	this->sumVarianceTime = 0;
 	this->sendRoute = *new vector<Node*>();
 	this->currentPacket = NULL;
 }
@@ -64,6 +65,10 @@ int Node::getSendNum() const {
 /* Return the sum of the delay times of all packets sent by this Node */
 double Node::getSumDelayTime() const {
 	return this->sumDelayTime;
+}
+/* Return the sum variance of the delay time in this Node */
+double Node::getSumVarianceTime() const {
+	return this->sumVarianceTime;
 }
 /* Return this Node num of Packets to be sent */
 int Node::getSendNumBkp() const {
@@ -354,13 +359,35 @@ void Node::beginSimulation(int TIME, int& numPacketReceieved, vector<Node> nodeV
 				}
 				fprintf(output, "%d: %4.2f |\n", currentPacket->getPacketRoute().at(currentPacket->getPacketRoute().size() - 1)->getId(), currentPacket->getPacketTimes().at(currentPacket->getPacketTimes().size() - 1));
 				
-				double delayTime = currentPacket->getPacketTimes().at(currentPacket->getPacketTimes().size() - 1) - currentPacket->getPacketTimes().at(0);
+				double delay = currentPacket->getPacketTimes().at(currentPacket->getPacketTimes().size() - 1) - currentPacket->getPacketTimes().at(0);
 				sendNum++;
-				sumDelayTime += delayTime;
+				sumDelayTime += delay;
 
+				delayTime.push_back(delay);
 				numPacketReceieved++;
-				delete currentPacket;
 			}
+		}
+	}
+}
+
+/*
+ * Sai Kiran Vadlamudi  C05
+ * Calculate the variance of the delay time for this Node
+ * 
+ * Parameters:
+ *	None
+ *	
+ * Return:
+ *	double
+ */
+void Node::calculateVariance() {
+	if (sendNum != 0)
+	{
+		int mean = sumDelayTime / sendNum;
+
+		for (unsigned i = 0; i < delayTime.size(); i++)
+		{
+			sumVarianceTime += pow((delayTime.at(i) - mean), 2);
 		}
 	}
 }

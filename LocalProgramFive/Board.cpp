@@ -362,7 +362,7 @@ void Board::runSimulation(FILE *output) {
 	
 	int TIME = 0;
 	int numPacketSent = 0, numPacketReceieved = 0;
-	double totalDelayTime = 0;
+	double totalDelayTime = 0, totalVarianceTime = 0;
 	totalNumPackets("S", numPacketSent, numPacketReceieved);
 
 	while (numPacketReceieved < numPacketSent)
@@ -378,20 +378,27 @@ void Board::runSimulation(FILE *output) {
 			initializeBoard();
 			setNodePos();
 			printBoard(output);
+			printf("Time: %d\n", TIME);
 		}
 
 		TIME++;
 	}	
 
+	
 	fprintf(output, "\n\n-------------------------------------------- Simulation Results Below --------------------------------------------------\n\n");
 	printBoard(output);
 	fprintf(output, "\n");
 	for (unsigned i = numSources + numMules + 1; i < nodeVector.size(); i++)
 	{
-		fprintf(output, "| Receiver ID: %3d | Sum Delay Time: %7.0d | Packets Received: %4d | Mean Delay: %4.2f |\n", nodeVector.at(i).getId(), nodeVector.at(i).getSumDelayTime(), nodeVector.at(i).getSendNum(), nodeVector.at(i).getSendNum() != 0 ? nodeVector.at(i).getSumDelayTime() / nodeVector.at(i).getSendNum() : 0.00);
+		nodeVector.at(i).calculateVariance();
+		double recieverMean = (nodeVector.at(i).getSendNum() != 0 ? nodeVector.at(i).getSumDelayTime() / nodeVector.at(i).getSendNum() : 0.00);
+		double recieverVariance = (nodeVector.at(i).getSendNum() != 0 ? nodeVector.at(i).getSumVarianceTime() / nodeVector.at(i).getSendNum() : 0.00);
+		fprintf(output, "| Receiver ID: %3d | Sum Delay Time: %7.0f | Packets Received: %4d | Mean Delay: %4.2f | Variance Delay: %4.2f |\n", nodeVector.at(i).getId(), nodeVector.at(i).getSumDelayTime(), nodeVector.at(i).getSendNum(), recieverMean, recieverVariance);
+		totalVarianceTime += (nodeVector.at(i).getSumVarianceTime());
 		totalDelayTime += (nodeVector.at(i).getSumDelayTime());
 	}
 	fprintf(output, "\nOverall Mean Delay Time: %4.2f\n", totalDelayTime / numPacketReceieved);
+	fprintf(output, "Overall Variance Delay Time: %4.2f\n", totalVarianceTime / numPacketReceieved);
 	fprintf(output, "Final Simulation Time: %d\n", TIME);
 	fprintf(output, "Total # of Packets Processed: %d\n", numPacketReceieved);
 }
