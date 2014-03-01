@@ -23,6 +23,7 @@ class Node {
 		int getStartTime() const;
 		int getSendNum() const;
 		double getSumDelayTime() const;
+		double getSumVarianceTime() const;
 		int getSendNumBkp() const;
 		int getSendSize() const;
 		vector<Node*> getSendRoute() const;
@@ -49,6 +50,7 @@ class Node {
 		void nodeHop(int length, int width);
 		bool collisionCheck(vector<Node> nodeVector);
 		void beginSimulation(int TIME, int& numPacketReceived, vector<Node> nodeVector, FILE *output);
+		void calculateVariance();
 		
 	private:
 		int id;
@@ -59,8 +61,10 @@ class Node {
 		int startTime;
 		int sendNum;
 		double sumDelayTime;
+		double sumVarianceTime;
 		int sendNumBkp;
 		int sendSize;
+		vector<double> delayTime;
 		vector<Node*> sendRoute;
 		Packet *currentPacket;
 		LinkListPacket queue;

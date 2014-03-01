@@ -36,6 +36,7 @@ int main(const int argc, const char* argv[]) {
 
 			// Read in the source node info
 			for (int i = 0; i < atoi(argv[1]); i++)
+			//for (int i = 0; i < 1; i++)
 			{
 				// Read in the first five properties of the source node in the current line 
 				fscanf(input, "%d %d %d %d %d", &id, &startTime, &sendNum, &sendSize, &routeSize);
