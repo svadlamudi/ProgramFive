@@ -1,3 +1,4 @@
+// Importing libraries and declarations
 #include "Main.h"
 #include <time.h>
 
@@ -9,22 +10,29 @@ using namespace std;
  */
 int main(const int argc, const char* argv[]) {
 
+	// Seed for random number generator
 	srand((unsigned)time(NULL));
 
+	// Check for correct number of command line arguments
 	if (argc == 6)
 	{
-		// 
+		// Temp variables to store user input from file
 		int id = 0, startTime = 0, sendNum = 0, sendSize = 0, routeSize = 0, routeId = 0;
-		FILE *output;
-		FILE *input;
-		output = fopen("packetsim.txt", "w");
+		FILE *input, *outputFCFS, *outputPQ;
+		
+		// Open files
+		outputFCFS = fopen("packetsimFCFS.txt", "w");
+		outputPQ = fopen("packetsimPQ.txt", "w");
 		input = fopen(argv[5], "r");
 
-		if (output != NULL && input != NULL) {
+		if (outputFCFS != NULL && input != NULL) {
 			// Print heading and output format
-			fprintf(output, "Name: Jordan Feeley        Section: C05\n");
-			fprintf(output, "Name: Sai Kiran Vadlamudi  Section: C05\n\n");
-			fprintf(output, "| Source: Arrival Time | All Mules: All Arrival Times | Receiver: Arrival Time\n\n");
+			fprintf(outputFCFS, "Name: Jordan Feeley        Section: C05\n");
+			fprintf(outputFCFS, "Name: Sai Kiran Vadlamudi  Section: C05\n\n");
+			fprintf(outputFCFS, "| Source: Arrival Time | All Mules: All Arrival Times | Receiver: Arrival Time\n\n");
+			fprintf(outputPQ, "Name: Jordan Feeley        Section: C05\n");
+			fprintf(outputPQ, "Name: Sai Kiran Vadlamudi  Section: C05\n\n");
+			fprintf(outputPQ, "| Source: Arrival Time | All Mules: All Arrival Times | Receiver: Arrival Time\n\n");
 			
 			// Set-up, Randomize, and print board for first time
 			Board manetMap = *new Board(atoi(argv[4]), atoi(argv[4]) + 2, *new vector<Node>(), atoi(argv[1]), atoi(argv[3]), atoi(argv[2]));
@@ -32,11 +40,11 @@ int main(const int argc, const char* argv[]) {
 			manetMap.initializeBoard();
 			manetMap.generateRandomNodePos();
 			manetMap.setNodePos();
-			manetMap.printBoard(output);
+			manetMap.printBoard(outputFCFS);
 
 			// Read in the source node info
 			for (int i = 0; i < atoi(argv[1]); i++)
-			//for (int i = 0; i < 1; i++)
+			//for (int i = 0; i < 6; i++)
 			{
 				// Read in the first five properties of the source node in the current line 
 				fscanf(input, "%d %d %d %d %d", &id, &startTime, &sendNum, &sendSize, &routeSize);
@@ -54,13 +62,18 @@ int main(const int argc, const char* argv[]) {
 			}
 
 			// Run simulation
-			manetMap.runSimulation(output);
+			manetMap.runSimulation(outputFCFS, outputPQ);
+
+			// Close files
+			fclose(input);
+			fclose(outputFCFS);
+			fclose(outputPQ);
 
 			return 0;
 		}
 		else {
 			// Output file corrupted
-			if (output == NULL)
+			if (outputFCFS == NULL)
 				printf("Output File couldn't be opened\n\n");
 			// Input file corrupted
 			else
@@ -74,3 +87,4 @@ int main(const int argc, const char* argv[]) {
 		return 1;
 	}
 }
+

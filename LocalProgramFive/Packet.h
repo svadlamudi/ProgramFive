@@ -1,11 +1,13 @@
 #ifndef _PACKET_H
 #define _PACKET_H
 
+// Importing libraries and declarations
 #include <string>
 #include <vector>
 
 using namespace std;
 
+// Forward declaration of Node object
 class Node;
 
 class Packet {
@@ -38,3 +40,4 @@ class Packet {
 };
 
 #endif
+

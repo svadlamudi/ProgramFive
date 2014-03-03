@@ -25,11 +25,18 @@ Node::Node(int id, int xCoord, int yCoord, LinkListPacket queue) {
 	this->startTime = 0;
 	this->sendSize = 0;
 	this->sendNum = 0;
+	this->sendNumPQ = 0;
 	this->sendNumBkp = 0;
-	this->sumDelayTime = 0;
-	this->sumVarianceTime = 0;
+	this->sumDelayTimeFCFS = 0;
+	this->sumDelayTimePQ = 0;
+	this->sumVarianceTimeFCFS = 0;
+	this->sumVarianceTimePQ = 0;
 	this->sendRoute = *new vector<Node*>();
 	this->currentPacket = NULL;
+	this->currentPacketPQ = NULL;
+	this->pQSmall = *new LinkListPacket();
+	this->pQMedium = *new LinkListPacket();
+	this->pQLarge = *new LinkListPacket();
 }
 
 // Accessors and Mutators
@@ -62,13 +69,21 @@ int Node::getStartTime() const {
 int Node::getSendNum() const {
 	return this->sendNum;
 }
-/* Return the sum of the delay times of all packets sent by this Node */
-double Node::getSumDelayTime() const {
-	return this->sumDelayTime;
+/* Return the sum of the FCFS delay times of all packets sent by this Node */
+double Node::getSumDelayTimeFCFS() const {
+	return this->sumDelayTimeFCFS;
 }
-/* Return the sum variance of the delay time in this Node */
-double Node::getSumVarianceTime() const {
-	return this->sumVarianceTime;
+/* Return the sum of the PQ delay times of all packets sent by this Node */
+double Node::getSumDelayTimePQ() const {
+	return this->sumDelayTimePQ;
+}
+/* Return the sum FCFS variance of the delay time in this Node */
+double Node::getSumVarianceTimeFCFS() const {
+	return this->sumVarianceTimeFCFS;
+}
+/* Return the sum PQ variance of the delay time in this Node */
+double Node::getSumVarianceTimePQ() const {
+	return this->sumVarianceTimePQ;
 }
 /* Return this Node num of Packets to be sent */
 int Node::getSendNumBkp() const {
@@ -89,6 +104,18 @@ Packet* Node::getCurrentPacket() {
 /* Return this Node queue */
 LinkListPacket Node::getQueue() {
 	return this->queue;
+}
+/* Return this Node Priority small packet queue */
+LinkListPacket Node::getPQSmall() {
+	return this->pQSmall;
+}
+/* Return this Node Priority medium packet queue */
+LinkListPacket Node::getPQMedium() {
+	return this->pQMedium;
+}
+/* Return this Node Priority large packet queue */
+LinkListPacket Node::getPQLarge() {
+	return this->pQLarge;
 }
 
 /* Set this Node id to given int */
@@ -130,11 +157,13 @@ void Node::setStartTime(int startTime) {
 /* Set this Node number of Packets to be sent to given int */
 void Node::setSendNum(int sendNum) {
 	this->sendNum = sendNum;
+	this->sendNumPQ = sendNum;
 }
-/* Set this Node total delay time of all packets to given int */
-void Node::setSumDelayTime(double sumDelayTime) {
-	this->sumDelayTime = sumDelayTime;
+/* Set this Node total FCFS delay time of all packets to given double */
+void Node::setSumDelayTimeFCFS(double sumDelayTime) {
+	this->sumDelayTimeFCFS = sumDelayTime;
 }
+/* Set this Node total PQ delay time of all packets to given double */
 /* Set this Node number of Packets to be sent backup to given int */
 void Node::setSendNumBkp(int sendNumBkp) {
 	this->sendNumBkp = sendNumBkp;
@@ -160,6 +189,18 @@ void Node::setCurrentPacket(Packet *currentPacket) {
 /* Set this Node queue to given LinkListPacket */
 void Node::setQueue(LinkListPacket queue) {
 	this->queue = queue;
+}
+/* Set this Node Priority small packet queue to given LinkListPacket */
+void Node::setPQSmall(LinkListPacket pQSmall) {
+	this->pQSmall = pQSmall;
+}
+/* Set this Node Priority medium packet queue to given LinkListPacket */
+void Node::setPQMedium(LinkListPacket pQMedium) {
+	this->pQMedium = pQMedium;
+}
+/* Set this Node Priority large packet queue to given LinkListPacket */
+void Node::setPQLarge(LinkListPacket pQLarge) {
+	this->pQLarge = pQLarge;
 }
 
 // Object Functions
@@ -361,9 +402,9 @@ void Node::beginSimulation(int TIME, int& numPacketReceieved, vector<Node> nodeV
 				
 				double delay = currentPacket->getPacketTimes().at(currentPacket->getPacketTimes().size() - 1) - currentPacket->getPacketTimes().at(0);
 				sendNum++;
-				sumDelayTime += delay;
+				sumDelayTimeFCFS += delay;
 
-				delayTime.push_back(delay);
+				delayTimeFCFS.push_back(delay);
 				numPacketReceieved++;
 			}
 		}
@@ -372,7 +413,111 @@ void Node::beginSimulation(int TIME, int& numPacketReceieved, vector<Node> nodeV
 
 /*
  * Sai Kiran Vadlamudi  C05
- * Calculate the variance of the delay time for this Node
+ * Run a Priority Queue simulation on this Node
+ * 
+ ** Parameters:
+ *	TIME: current time in the simulation
+ *	numPacketRecieved: total number of packets received in the simulation
+ *	output: pointer to the output file
+ *
+ *	Return:
+ *	 void
+ */
+void Node::beginSimulationPQ(int TIME, int& numPacketReceivedPQ, vector<Node> nodeVector, FILE *output) {
+	if (nodeType == "S" && TIME >= startTime && sendNumPQ > 0)
+	{
+		if (currentPacketPQ == NULL)
+		{
+			currentPacketPQ = new Packet(&sendRoute, TIME, sendSize, 1, NULL);
+		}
+		else if (TIME == currentPacketPQ->getPacketTimes().at(0) + currentPacketPQ->getPacketSize())
+		{
+			double arrivalTime = TIME + propogationTime(*(currentPacketPQ->getPacketRoute().at(1)));
+			currentPacketPQ->modifyPacketTimes(arrivalTime);
+			
+			if (currentPacketPQ->getPacketSize() == 1)
+				currentPacketPQ->getPacketRoute().at(1)->pQSmall.insert(currentPacketPQ);
+			else if (currentPacketPQ->getPacketSize() == 2)
+				currentPacketPQ->getPacketRoute().at(1)->pQMedium.insert(currentPacketPQ);
+			else
+				currentPacketPQ->getPacketRoute().at(1)->pQLarge.insert(currentPacketPQ);
+			
+			sendNumPQ--;
+			currentPacketPQ = new Packet(&sendRoute, TIME, sendSize, 1, NULL);
+		}
+	}
+	else if (nodeType == "M")
+	{
+		if (currentPacketPQ == NULL) {
+			if (!pQSmall.isEmpty())
+				currentPacketPQ = pQSmall.getNextNode();
+			else if (!pQMedium.isEmpty())
+				currentPacketPQ = pQMedium.getNextNode();
+			else if (!pQLarge.isEmpty())
+				currentPacketPQ = pQLarge.getNextNode();
+		}
+		else if (TIME >= currentPacketPQ->getPacketTimes().at(currentPacketPQ->getCurrentNode()) + currentPacketPQ->getPacketSize() - 1) {
+			currentPacketPQ->setCurrentNode(1 + currentPacketPQ->getCurrentNode());
+			double arrivalTime = TIME + propogationTime(*(currentPacketPQ->getPacketRoute().at(currentPacketPQ->getCurrentNode())));
+			currentPacketPQ->modifyPacketTimes(arrivalTime);
+			
+			if (currentPacketPQ->getPacketRoute().at(currentPacketPQ->getCurrentNode())->getNodeType() == "R") {
+				currentPacketPQ->getPacketRoute().at(currentPacketPQ->getCurrentNode())->pQLarge.insert(currentPacketPQ);
+			}
+			else {
+				if (currentPacketPQ->getPacketSize() == 1)
+					currentPacketPQ->getPacketRoute().at(currentPacketPQ->getCurrentNode())->pQSmall.insert(currentPacketPQ);
+				else if (currentPacketPQ->getPacketSize() == 2)
+					currentPacketPQ->getPacketRoute().at(currentPacketPQ->getCurrentNode())->pQMedium.insert(currentPacketPQ);
+				else if (currentPacketPQ->getPacketSize() == 3)
+					currentPacketPQ->getPacketRoute().at(currentPacketPQ->getCurrentNode())->pQLarge.insert(currentPacketPQ);
+			}
+
+			if (!pQSmall.isEmpty())
+				currentPacketPQ = pQSmall.getNextNode();
+			else if (!pQMedium.isEmpty())
+				currentPacketPQ = pQMedium.getNextNode();
+			else if (!pQLarge.isEmpty())
+				currentPacketPQ = pQLarge.getNextNode();
+			else
+				currentPacketPQ = NULL;
+		}
+		else {
+			pQSmall.incrementWaitTime(TIME);
+			pQMedium.incrementWaitTime(TIME);
+			pQLarge.incrementWaitTime(TIME);
+		}
+	}
+	else if (nodeType == "R")
+	{
+		while (!pQLarge.isEmpty()) 
+		{
+			currentPacketPQ = pQLarge.getNextNode();
+
+			if (currentPacketPQ != NULL)
+			{
+				fprintf(output, "| %d: %4.2f | ", currentPacketPQ->getPacketRoute().at(0)->getId(), currentPacketPQ->getPacketTimes().at(0));
+				for (unsigned i = 1; i < currentPacketPQ->getPacketTimes().size() - 1; i++)
+				{
+					fprintf(output, "%d: %4.2f | ", currentPacketPQ->getPacketRoute().at(i)->getId(), currentPacketPQ->getPacketTimes().at(i));
+				}
+				fprintf(output, "%d: %4.2f |\n", currentPacketPQ->getPacketRoute().at(currentPacketPQ->getPacketRoute().size() - 1)->getId(), currentPacketPQ->getPacketTimes().at(currentPacketPQ->getPacketTimes().size() - 1));
+
+				double delay = currentPacketPQ->getPacketTimes().at(currentPacketPQ->getPacketTimes().size() - 1) - currentPacketPQ->getPacketTimes().at(0);
+				sendNumPQ++;
+				sumDelayTimePQ += delay;
+
+				delayTimePQ.push_back(delay);
+				numPacketReceivedPQ++;
+			}
+		}
+	}
+}
+
+
+/*
+ * Jordan Feeley  C05
+ * Calculate the variance of the FCFS delay time for this Node
  * 
  * Parameters:
  *	None
@@ -380,14 +525,37 @@ void Node::beginSimulation(int TIME, int& numPacketReceieved, vector<Node> nodeV
  * Return:
  *	double
  */
-void Node::calculateVariance() {
+void Node::calculateVarianceFCFS() {
 	if (sendNum != 0)
 	{
-		int mean = sumDelayTime / sendNum;
+		int mean = sumDelayTimeFCFS / sendNum;
 
-		for (unsigned i = 0; i < delayTime.size(); i++)
+		for (unsigned i = 0; i < delayTimeFCFS.size(); i++)
 		{
-			sumVarianceTime += pow((delayTime.at(i) - mean), 2);
+			sumVarianceTimeFCFS += pow((delayTimeFCFS.at(i) - mean), 2);
 		}
 	}
 }
+
+/*
+ * Jordan Feeley  C05
+ * Calculate the variance of the PQ delay time for this Node
+ *
+ * Parameters:
+ *	None
+ *
+ * Return:
+ *	double
+ */
+void Node::calculateVariancePQ() {
+	if (sendNumPQ != 0)
+	{
+		int mean = sumDelayTimePQ / sendNumPQ;
+
+		for (unsigned i = 0; i < delayTimePQ.size(); i++)
+		{
+			sumVarianceTimePQ += pow((delayTimePQ.at(i) - mean), 2);
+		}
+	}
+}
+

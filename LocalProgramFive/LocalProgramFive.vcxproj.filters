@@ -49,13 +49,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="packetsim.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
     <Text Include="sourcenodelist.txt">
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="prog5.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="packetsimFCFS.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="packetsimPQ.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

@@ -1,6 +1,7 @@
 #ifndef _LINKLISTPACKET_H
 #define _LINKLISTPACKET_H
 
+// Importing libraries and declarations
 #include <string>
 #include <vector>
 #include "Packet.h"
@@ -28,3 +29,4 @@ class LinkListPacket {
 };
 
 #endif
+

@@ -1,6 +1,7 @@
 #ifndef _BOARD_H
 #define _BOARD_H
 
+// Importing libraries and declarations
 #include <vector>
 #include "Node.h"
 
@@ -39,7 +40,9 @@ class Board {
 		void findSet(int id, int startTime, int sendNum, int sendSize, vector<int> sendRoute);
 		void moveNodes();
 		void totalNumPackets(string set, int& numPacketSent, int& numPacketReceieved);
-		void runSimulation(FILE *output);
+		void runSimulation(FILE *outputFCFS, FILE *outputPQ);
+		void printResultsFCFS(int TIME, int numPacketReceieved, FILE *output);
+		void printResultsPQ(int TIME, int numPacketReceieved, FILE *output);
 
 	private:
 		vector< vector<int> > boardLayout;
@@ -52,3 +55,4 @@ class Board {
 };
 
 #endif
+

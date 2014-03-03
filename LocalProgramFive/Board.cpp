@@ -87,14 +87,18 @@ void Board::setNumRecievers(int numRecievers) {
  */
 void Board::createNodeVector() {
 
+	// Calculate total number of Nodes
 	int totalNumNodes = numSources + numMules + numRecievers;
+	// Create a new Vector to hold the Nodes
 	vector<Node> tempVector = *new vector<Node>(totalNumNodes + 1);
 
+	// Iterate through the Vector and assign Node ids
 	for (unsigned i = 1; i < tempVector.size(); i++)
 	{
 		tempVector.at(i) = *new Node(i);
 	}
 
+	// Set new vector to this Board nodeVector
 	nodeVector = tempVector;
 }
 
@@ -109,6 +113,7 @@ void Board::createNodeVector() {
  *	void
  */
 void Board::initializeBoard() {
+
 	for (int i = 0; i < this->length; i++) {
 		for (int j = 0; j < this->width; j++)
 		{
@@ -128,18 +133,28 @@ void Board::initializeBoard() {
  *	void
  */
 void Board::generateRandomNodePos() {
+	
+	// Iterate through all the nodes in this Board
 	for (unsigned i = 1; i < nodeVector.size(); i++) {
+		
+		// If Node is a source
 		if (i <= (unsigned)numSources)
 		{
+			// Assign properties to the source
 			nodeVector.at(i).setNodeType("S");
 			nodeVector.at(i).setXCoord(0);
 			nodeVector.at(i).setYCoord(i - 1);
 			nodeVector.at(i).setDirection(-1);
 		}
+
+		// If Node is a mule
 		else if (i >(unsigned)numSources && i <= (unsigned)(numMules + numSources))
 		{
+			// Generate random x and y
 			int tempXCoord = (rand() % (this->width - 3)) + 1;
 			int tempYCoord = rand() % (this->length - 1);
+
+			// Check if a Node is placed already at that location
 			for (unsigned j = 1; j < nodeVector.size(); j++)
 			{
 				while (tempXCoord == nodeVector.at(j).getXCoord() && tempYCoord == nodeVector.at(j).getYCoord())
@@ -148,13 +163,18 @@ void Board::generateRandomNodePos() {
 					tempYCoord = rand() % (this->length - 1);
 				}
 			}
+
+			// Assign properties to the mule
 			nodeVector.at(i).setNodeType("M");
 			nodeVector.at(i).setXCoord(tempXCoord);
 			nodeVector.at(i).setYCoord(tempYCoord);
 			nodeVector.at(i).setDirection(rand() % 3);
 		}
+
+		// If Node is a receiver
 		else if (i > (unsigned)numMules && i <= (unsigned)(numSources + numMules + numRecievers))
 		{
+			// Assign properties to the receiver
 			nodeVector.at(i).setNodeType("R");
 			nodeVector.at(i).setXCoord(width-1);
 			nodeVector.at(i).setYCoord(i - (numSources + numMules + 1));
@@ -174,8 +194,11 @@ void Board::generateRandomNodePos() {
  *	void
  */
 void Board::setNodePos() {
+	
+	// Iterate through the nodes on this Board
 	for (unsigned i = 1; i < nodeVector.size(); i++)
 	{
+		// Draw the Node at this location
 		int tempX = (nodeVector.at(i)).getXCoord();
 		int tempY = (nodeVector.at(i)).getYCoord();
 		(this->boardLayout.at(tempY)).at(tempX) = (nodeVector.at(i)).getId();
@@ -213,29 +236,52 @@ void Board::printRow(FILE *output) {
  *	void
  */
 void Board::printBoard(FILE *output) {
+	
+	// Print column labels
+	for (int k = 0; k < width; k++){
+		fprintf(output, "%3d", k);
+	}
+	fprintf(output, "\n");
+	
+	// Print row separator
 	printRow(output);
+	
+	// Iterate through this Board vector
 	for (unsigned i = 0; i < this->boardLayout.size(); i++) {
+
+		// Print the column separator
 		fprintf(output, "|");
+
 		for (unsigned j = 0; j < this->boardLayout.at(i).size(); j++)
 		{
+			// If first position in the row print source node
 			if (j == (unsigned) 0) {
+				
+				// If no source at this location
 				if ((this->boardLayout.at(i)).at(j) == 0)
 					fprintf(output, "   |");
 				else
 					fprintf(output, "%3d|", (this->boardLayout.at(i)).at(j));
-			}				
-			else if (j == (unsigned) width-1)
+			}
+
+			// If last position in the row print receiver node
+			else if (j == (unsigned)width - 1){
+				
+				// If no receiver at this location
 				if ((this->boardLayout.at(i)).at(j) == 0)
 					fprintf(output, "|   ");
 				else
 					fprintf(output, "|%3d", (this->boardLayout.at(i)).at(j));
+			}
+
+			// If no mule at this location
 			else if ((this->boardLayout.at(i)).at(j) == 0)
 				fprintf(output, "   ");
 			else
 				fprintf(output, "%3d", (this->boardLayout.at(i)).at(j));
 		}
-		fprintf(output, "|\n");
-		//printRow(output);
+
+		fprintf(output, "| %3d\n", i);
 	}
 	printRow(output);
 	fprintf(output, "\n");
@@ -287,6 +333,8 @@ void Board::printTable(FILE *output) {
  *	void
  */
 void Board::findSet(int id, int startTime, int sendNum, int sendSize, vector<int> sendRoute) {
+	
+	// Assign the given properties to the Node with the given ID
 	nodeVector.at(id).setStartTime(startTime);
 	nodeVector.at(id).setSendNum(sendNum);
 	nodeVector.at(id).setSendNumBkp(sendNum);
@@ -310,6 +358,8 @@ void Board::findSet(int id, int startTime, int sendNum, int sendSize, vector<int
  *	void
  */
 void Board::moveNodes() {
+	
+	// Move all nodes in this Board one spot in their direction
 	for (unsigned i = 1; i < nodeVector.size(); i++)
 	{
 		nodeVector.at(i).moveNode(nodeVector, length, width);
@@ -327,9 +377,10 @@ void Board::moveNodes() {
  *	void
  */
 void Board::totalNumPackets(string set, int& numPacketSent, int& numPacketReceieved) {
-	
+	// temp counter variable for counting number of packets sent or received
 	int tempCounter = 0;
 
+	// Calculate number of packets to be sent in the simulation
 	if (set == "S")
 	{
 		for (int i = 1; i <= numSources; i++)
@@ -338,6 +389,8 @@ void Board::totalNumPackets(string set, int& numPacketSent, int& numPacketReceie
 		}
 		numPacketSent = tempCounter;
 	} 
+	
+	// Calculate number of packets received in the simulation
 	else if (set == "R")
 	{
 		for (int i = (numSources + numMules); i <= (numSources + numMules + numRecievers); i++)
@@ -353,52 +406,111 @@ void Board::totalNumPackets(string set, int& numPacketSent, int& numPacketReceie
  * Run the simulation on the nodes in this nodeVector
  * 
  * Parameters:
- *	None
+ *	output: pointer to the output log file
+ *	type: "FCFS" or "PQ"
  *	
  * Return:
  *	void
  */
-void Board::runSimulation(FILE *output) {
+void Board::runSimulation(FILE *outputFCFS, FILE *outputPQ) {
 	
+	// Simulation variables
 	int TIME = 0;
-	int numPacketSent = 0, numPacketReceieved = 0;
-	double totalDelayTime = 0, totalVarianceTime = 0;
+	int numPacketSent = 0, numPacketReceieved = 0, numPacketReceievedPQ = 0;
 	totalNumPackets("S", numPacketSent, numPacketReceieved);
 
-	while (numPacketReceieved < numPacketSent)
+	// Run simulation while the number of packets received is lower than the number of packets sent
+	while (numPacketReceieved < numPacketSent || numPacketReceievedPQ < numPacketSent)
 	{
+		// Iterate through the Nodes in this Board
 		for (unsigned i = 1; i < nodeVector.size(); i++)
 		{
-			nodeVector.at(i).beginSimulation(TIME, numPacketReceieved, nodeVector, output);
+			// Run FCFS on this Node
+			nodeVector.at(i).beginSimulation(TIME, numPacketReceieved, nodeVector, outputFCFS);
+			// Run PQ on this Node
+			nodeVector.at(i).beginSimulationPQ(TIME, numPacketReceievedPQ, nodeVector, outputPQ);
 		}
-	
+
+		// Move nodes every ten sims
 		if (TIME > 0 && TIME % 10 == 0)
 		{
 			moveNodes();
 			initializeBoard();
 			setNodePos();
-			printBoard(output);
-			printf("Time: %d\n", TIME);
+			printBoard(outputFCFS);
+			printBoard(outputPQ);
+			printf("Time: %d | FCFS Number: %d | PQ Number: %d\n", TIME, numPacketReceieved, numPacketReceievedPQ);
 		}
 
+		// Increment time in simulation
 		TIME++;
-	}	
+	}
+	
+	// Print results for this simulation
+	printResultsFCFS(TIME, numPacketReceieved, outputFCFS);
+	printResultsPQ(TIME, numPacketReceieved, outputPQ);
+}
 
+/*
+ * Sai Kiran Vadlamudi  C05
+ * Print the FCFS results of the simulation
+ * 
+ * Parameters:
+ *	None
+ *
+ * Return:
+ *	void
+ */
+void Board::printResultsFCFS(int TIME, int numPacketReceieved, FILE *output) {
+	
+	double totalDelayTimeFCFS = 0, totalVarianceTimeFCFS = 0;
 	
 	fprintf(output, "\n\n-------------------------------------------- Simulation Results Below --------------------------------------------------\n\n");
 	printBoard(output);
 	fprintf(output, "\n");
 	for (unsigned i = numSources + numMules + 1; i < nodeVector.size(); i++)
 	{
-		nodeVector.at(i).calculateVariance();
-		double recieverMean = (nodeVector.at(i).getSendNum() != 0 ? nodeVector.at(i).getSumDelayTime() / nodeVector.at(i).getSendNum() : 0.00);
-		double recieverVariance = (nodeVector.at(i).getSendNum() != 0 ? nodeVector.at(i).getSumVarianceTime() / nodeVector.at(i).getSendNum() : 0.00);
-		fprintf(output, "| Receiver ID: %3d | Sum Delay Time: %7.0f | Packets Received: %4d | Mean Delay: %4.2f | Variance Delay: %4.2f |\n", nodeVector.at(i).getId(), nodeVector.at(i).getSumDelayTime(), nodeVector.at(i).getSendNum(), recieverMean, recieverVariance);
-		totalVarianceTime += (nodeVector.at(i).getSumVarianceTime());
-		totalDelayTime += (nodeVector.at(i).getSumDelayTime());
+		nodeVector.at(i).calculateVarianceFCFS();
+		double recieverMean = (nodeVector.at(i).getSendNum() != 0 ? nodeVector.at(i).getSumDelayTimeFCFS() / nodeVector.at(i).getSendNum() : 0.00);
+		double recieverVariance = (nodeVector.at(i).getSendNum() != 0 ? nodeVector.at(i).getSumVarianceTimeFCFS() / nodeVector.at(i).getSendNum() : 0.00);
+		fprintf(output, "| Receiver ID: %3d | Sum Delay Time: %7.0f | Packets Received: %4d | Mean Delay: %4.2f | Variance Delay: %4.2f |\n", nodeVector.at(i).getId(), nodeVector.at(i).getSumDelayTimeFCFS(), nodeVector.at(i).getSendNum(), recieverMean, recieverVariance);
+		totalVarianceTimeFCFS += (nodeVector.at(i).getSumVarianceTimeFCFS());
+		totalDelayTimeFCFS += (nodeVector.at(i).getSumDelayTimeFCFS());
 	}
-	fprintf(output, "\nOverall Mean Delay Time: %4.2f\n", totalDelayTime / numPacketReceieved);
-	fprintf(output, "Overall Variance Delay Time: %4.2f\n", totalVarianceTime / numPacketReceieved);
+	fprintf(output, "\nOverall Mean Delay Time: %4.2f\n", totalDelayTimeFCFS / numPacketReceieved);
+	fprintf(output, "Overall Variance Delay Time: %4.2f\n", totalVarianceTimeFCFS / numPacketReceieved);
+	fprintf(output, "Final Simulation Time: %d\n", TIME);
+	fprintf(output, "Total # of Packets Processed: %d\n", numPacketReceieved);
+}
+
+/*
+* Sai Kiran Vadlamudi  C05
+* Print the PQ results of the simulation
+*
+* Parameters:
+*	None
+*
+* Return:
+*	void
+*/
+void Board::printResultsPQ(int TIME, int numPacketReceieved, FILE *output) {
+
+	double totalDelayTimePQ = 0, totalVarianceTimePQ = 0;
+
+	fprintf(output, "\n\n-------------------------------------------- Simulation Results Below --------------------------------------------------\n\n");
+	printBoard(output);
+	fprintf(output, "\n");
+	for (unsigned i = numSources + numMules + 1; i < nodeVector.size(); i++)
+	{
+		nodeVector.at(i).calculateVariancePQ();
+		double recieverMean = (nodeVector.at(i).getSendNum() != 0 ? nodeVector.at(i).getSumDelayTimePQ() / nodeVector.at(i).getSendNum() : 0.00);
+		double recieverVariance = (nodeVector.at(i).getSendNum() != 0 ? nodeVector.at(i).getSumVarianceTimePQ() / nodeVector.at(i).getSendNum() : 0.00);
+		fprintf(output, "| Receiver ID: %3d | Sum Delay Time: %7.0f | Packets Received: %4d | Mean Delay: %4.2f | Variance Delay: %4.2f |\n", nodeVector.at(i).getId(), nodeVector.at(i).getSumDelayTimePQ(), nodeVector.at(i).getSendNum(), recieverMean, recieverVariance);
+		totalVarianceTimePQ += (nodeVector.at(i).getSumVarianceTimePQ());
+		totalDelayTimePQ += (nodeVector.at(i).getSumDelayTimePQ());
+	}
+	fprintf(output, "\nOverall Mean Delay Time: %4.2f\n", totalDelayTimePQ / numPacketReceieved);
+	fprintf(output, "Overall Variance Delay Time: %4.2f\n", totalVarianceTimePQ / numPacketReceieved);
 	fprintf(output, "Final Simulation Time: %d\n", TIME);
 	fprintf(output, "Total # of Packets Processed: %d\n", numPacketReceieved);
 }

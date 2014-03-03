@@ -25,7 +25,8 @@
     <ClCompile Include="Packet.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="packetsim.txt" />
+    <Text Include="packetsimFCFS.txt" />
+    <Text Include="packetsimPQ.txt" />
     <Text Include="prog5.txt" />
     <Text Include="sourcenodelist.txt" />
   </ItemGroup>

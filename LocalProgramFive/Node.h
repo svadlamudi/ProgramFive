@@ -22,13 +22,18 @@ class Node {
 		int getDirection() const;
 		int getStartTime() const;
 		int getSendNum() const;
-		double getSumDelayTime() const;
-		double getSumVarianceTime() const;
+		double getSumDelayTimeFCFS() const;
+		double getSumDelayTimePQ() const;
+		double getSumVarianceTimeFCFS() const;
+		double getSumVarianceTimePQ() const;
 		int getSendNumBkp() const;
 		int getSendSize() const;
 		vector<Node*> getSendRoute() const;
 		Packet* getCurrentPacket();
 		LinkListPacket getQueue();
+		LinkListPacket getPQSmall();
+		LinkListPacket getPQMedium();
+		LinkListPacket getPQLarge();
 
 		void setId(int id);
 		void setNodeType(string nodeType);
@@ -37,12 +42,16 @@ class Node {
 		void setDirection(int direction);
 		void setStartTime(int startTime);
 		void setSendNum(int sendNum);
-		void setSumDelayTime(double sumDelayTime);
+		void setSumDelayTimeFCFS(double sumDelayTimeFCFS);
+		void setSumDelayTimePQ(double sumDelayTimePQ);
 		void setSendNumBkp(int sendNumBkp);
 		void setSendSize(int sendSize);
 		void setSendRoute(vector<Node*> sendRoute);
 		void setCurrentPacket(Packet *currentPacket);
 		void setQueue(LinkListPacket queue);
+		void setPQSmall(LinkListPacket pQSmall);
+		void setPQMedium(LinkListPacket pQMedium);
+		void setPQLarge(LinkListPacket pQLarge);
 
 		// Object Functions
 		double propogationTime(Node recieveNode);
@@ -50,7 +59,9 @@ class Node {
 		void nodeHop(int length, int width);
 		bool collisionCheck(vector<Node> nodeVector);
 		void beginSimulation(int TIME, int& numPacketReceived, vector<Node> nodeVector, FILE *output);
-		void calculateVariance();
+		void beginSimulationPQ(int TIME, int& numPacketReceived, vector<Node> nodeVector, FILE *output);
+		void calculateVarianceFCFS();
+		void calculateVariancePQ();
 		
 	private:
 		int id;
@@ -60,14 +71,23 @@ class Node {
 		int direction;
 		int startTime;
 		int sendNum;
-		double sumDelayTime;
-		double sumVarianceTime;
+		int sendNumPQ;
+		double sumDelayTimeFCFS;
+		double sumDelayTimePQ;
+		double sumVarianceTimeFCFS;
+		double sumVarianceTimePQ;
 		int sendNumBkp;
 		int sendSize;
-		vector<double> delayTime;
+		vector<double> delayTimeFCFS;
+		vector<double> delayTimePQ;
 		vector<Node*> sendRoute;
 		Packet *currentPacket;
+		Packet *currentPacketPQ;
 		LinkListPacket queue;
+		LinkListPacket pQSmall;
+		LinkListPacket pQMedium;
+		LinkListPacket pQLarge;
 };
 
 #endif
+
