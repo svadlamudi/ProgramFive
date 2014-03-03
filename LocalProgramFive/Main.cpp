@@ -41,6 +41,7 @@ int main(const int argc, const char* argv[]) {
 			manetMap.generateRandomNodePos();
 			manetMap.setNodePos();
 			manetMap.printBoard(outputFCFS);
+			manetMap.printBoard(outputPQ);
 
 			// Read in the source node info
 			for (int i = 0; i < atoi(argv[1]); i++)

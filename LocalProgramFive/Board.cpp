@@ -1,4 +1,7 @@
 #include "Board.h"
+#include <iostream>
+
+using namespace std;
 
 // Constructors
 
@@ -142,9 +145,23 @@ void Board::generateRandomNodePos() {
 		{
 			// Assign properties to the source
 			nodeVector.at(i).setNodeType("S");
-			nodeVector.at(i).setXCoord(0);
-			nodeVector.at(i).setYCoord(i - 1);
 			nodeVector.at(i).setDirection(-1);
+
+			int tempXCoord = 0;
+			int tempYCoord = rand() % (this->length - 1);
+
+			for (unsigned j = 1; j < numSources+1; j++)
+			{
+				while (tempXCoord == nodeVector.at(j).getXCoord() && tempYCoord == nodeVector.at(j).getYCoord())
+				{
+					tempXCoord = 0;
+					tempYCoord = rand() % (this->length - 1);
+				}
+			}
+
+			nodeVector.at(i).setXCoord(tempXCoord);
+			nodeVector.at(i).setYCoord(tempYCoord);
+
 		}
 
 		// If Node is a mule
@@ -176,9 +193,22 @@ void Board::generateRandomNodePos() {
 		{
 			// Assign properties to the receiver
 			nodeVector.at(i).setNodeType("R");
-			nodeVector.at(i).setXCoord(width-1);
-			nodeVector.at(i).setYCoord(i - (numSources + numMules + 1));
 			nodeVector.at(i).setDirection(-1);
+
+			int tempXCoord = width - 1;
+			int tempYCoord = rand() % (this->length - 1);
+
+			for (unsigned j = numSources + numMules + numRecievers; j < nodeVector.size(); j++)
+			{
+				while (tempXCoord == nodeVector.at(j).getXCoord() && tempYCoord == nodeVector.at(j).getYCoord())
+				{
+					tempXCoord = width-1;
+					tempYCoord = rand() % (this->length - 1);
+				}
+			}
+
+			nodeVector.at(i).setXCoord(tempXCoord);
+			nodeVector.at(i).setYCoord(tempYCoord);
 		}
 	}
 }
@@ -235,9 +265,10 @@ void Board::printRow(FILE *output) {
  * Return:
  *	void
  */
-void Board::printBoard(FILE *output) {
+void Board::printBoard(FILE *output, int TIME) {
 	
 	// Print column labels
+	fprintf(output, "\nTime: %d\n", TIME);
 	for (int k = 0; k < width; k++){
 		fprintf(output, "%3d", k);
 	}
@@ -289,37 +320,6 @@ void Board::printBoard(FILE *output) {
 
 /*
  * Sai Kiran Vadlamudi  C05
- * Print the table of Node positions
- * 
- * Parameters:
- *	None
- *	
- * Return:
- *	void
- */
-void Board::printTable(FILE *output) {
-	for (size_t i = 1; i < nodeVector.size(); i++)
-	{
-		if (nodeVector.at(i).getNodeType() == "S")
-		{
-			if (i == 1)
-			{
-				fprintf(output, "Source Nodes: ");
-			}
-		}
-		else if (nodeVector.at(i).getNodeType() == "M")
-		{
-			
-		}
-		else if (nodeVector.at(i).getNodeType() == "R")
-		{
-			
-		}
-	}
-}
-
-/*
- * Sai Kiran Vadlamudi  C05
  * Find the Node with the given id and set the given Node properties to that Node
  * 
  * Parameters:
@@ -337,7 +337,6 @@ void Board::findSet(int id, int startTime, int sendNum, int sendSize, vector<int
 	// Assign the given properties to the Node with the given ID
 	nodeVector.at(id).setStartTime(startTime);
 	nodeVector.at(id).setSendNum(sendNum);
-	nodeVector.at(id).setSendNumBkp(sendNum);
 	nodeVector.at(id).setSendSize(sendSize);
 	vector<Node*> temp = *new vector<Node *>(sendRoute.size());
 	for (unsigned i = 0; i < sendRoute.size(); i++)
@@ -437,9 +436,10 @@ void Board::runSimulation(FILE *outputFCFS, FILE *outputPQ) {
 			moveNodes();
 			initializeBoard();
 			setNodePos();
-			printBoard(outputFCFS);
-			printBoard(outputPQ);
-			printf("Time: %d | FCFS Number: %d | PQ Number: %d\n", TIME, numPacketReceieved, numPacketReceievedPQ);
+			printBoard(outputFCFS, TIME);
+			printBoard(outputPQ, TIME);
+			printf("Completed: %d%%\r", ceil(((double)(numPacketReceieved + numPacketReceievedPQ)) / (2 * numPacketSent) * 100));
+			fflush(stdout);
 		}
 
 		// Increment time in simulation

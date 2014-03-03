@@ -26,7 +26,6 @@ Node::Node(int id, int xCoord, int yCoord, LinkListPacket queue) {
 	this->sendSize = 0;
 	this->sendNum = 0;
 	this->sendNumPQ = 0;
-	this->sendNumBkp = 0;
 	this->sumDelayTimeFCFS = 0;
 	this->sumDelayTimePQ = 0;
 	this->sumVarianceTimeFCFS = 0;
@@ -84,10 +83,6 @@ double Node::getSumVarianceTimeFCFS() const {
 /* Return the sum PQ variance of the delay time in this Node */
 double Node::getSumVarianceTimePQ() const {
 	return this->sumVarianceTimePQ;
-}
-/* Return this Node num of Packets to be sent */
-int Node::getSendNumBkp() const {
-	return this->sendNumBkp;
 }
 /* Return this Node size of Packets to be sent */
 int Node::getSendSize() const {
@@ -164,9 +159,8 @@ void Node::setSumDelayTimeFCFS(double sumDelayTime) {
 	this->sumDelayTimeFCFS = sumDelayTime;
 }
 /* Set this Node total PQ delay time of all packets to given double */
-/* Set this Node number of Packets to be sent backup to given int */
-void Node::setSendNumBkp(int sendNumBkp) {
-	this->sendNumBkp = sendNumBkp;
+void Node::setSumDelayTimePQ(double sumDelayTimePQ) {
+	this->sumDelayTimePQ = sumDelayTimePQ;
 }
 /* Set this Node size of Packets to be sent to given int */
 void Node::setSendSize(int sendSize) {
@@ -528,7 +522,7 @@ void Node::beginSimulationPQ(int TIME, int& numPacketReceivedPQ, vector<Node> no
 void Node::calculateVarianceFCFS() {
 	if (sendNum != 0)
 	{
-		int mean = sumDelayTimeFCFS / sendNum;
+		double mean = sumDelayTimeFCFS / sendNum;
 
 		for (unsigned i = 0; i < delayTimeFCFS.size(); i++)
 		{
@@ -550,7 +544,7 @@ void Node::calculateVarianceFCFS() {
 void Node::calculateVariancePQ() {
 	if (sendNumPQ != 0)
 	{
-		int mean = sumDelayTimePQ / sendNumPQ;
+		double mean = sumDelayTimePQ / sendNumPQ;
 
 		for (unsigned i = 0; i < delayTimePQ.size(); i++)
 		{

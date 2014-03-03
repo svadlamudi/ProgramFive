@@ -26,7 +26,6 @@ class Node {
 		double getSumDelayTimePQ() const;
 		double getSumVarianceTimeFCFS() const;
 		double getSumVarianceTimePQ() const;
-		int getSendNumBkp() const;
 		int getSendSize() const;
 		vector<Node*> getSendRoute() const;
 		Packet* getCurrentPacket();
@@ -44,7 +43,6 @@ class Node {
 		void setSendNum(int sendNum);
 		void setSumDelayTimeFCFS(double sumDelayTimeFCFS);
 		void setSumDelayTimePQ(double sumDelayTimePQ);
-		void setSendNumBkp(int sendNumBkp);
 		void setSendSize(int sendSize);
 		void setSendRoute(vector<Node*> sendRoute);
 		void setCurrentPacket(Packet *currentPacket);
@@ -70,14 +68,13 @@ class Node {
 		int yCoord;
 		int direction;
 		int startTime;
+		int sendSize;
 		int sendNum;
 		int sendNumPQ;
 		double sumDelayTimeFCFS;
 		double sumDelayTimePQ;
 		double sumVarianceTimeFCFS;
 		double sumVarianceTimePQ;
-		int sendNumBkp;
-		int sendSize;
 		vector<double> delayTimeFCFS;
 		vector<double> delayTimePQ;
 		vector<Node*> sendRoute;

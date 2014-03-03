@@ -4,6 +4,7 @@
 // Importing libraries and declarations
 #include <vector>
 #include "Node.h"
+#include <cstdio>
 
 using namespace std;
 
@@ -35,7 +36,7 @@ class Board {
 		void generateRandomNodePos();
 		void setNodePos();
 		void printRow(FILE *output);
-		void printBoard(FILE *output);
+		void printBoard(FILE *output, int TIME = 0);
 		void printTable(FILE *output);
 		void findSet(int id, int startTime, int sendNum, int sendSize, vector<int> sendRoute);
 		void moveNodes();
