@@ -46,14 +46,13 @@ class Board {
 		void printResultsPQ(int TIME, int numPacketReceieved, FILE *output);
 
 	private:
-		vector< vector<int> > boardLayout;
-		vector<Node> nodeVector;
-		int length;
-		int width;
-		int numSources;
-		int numMules;
-		int numRecievers;
+		vector< vector<int> > boardLayout;   // Holds the positions of the Nodes to print out
+		vector<Node> nodeVector;             // Holds the Nodes in this simulation
+		int length;                          // Length of the board read in from command line arguments
+		int width;							 // Width of the board read in from the command line arguments plus two to hold the sources and recievers
+		int numSources;                      // # of Sources in this simulation read in from command line arguments
+		int numMules;                        // # of Mules in this simulation read in from command line arguments
+		int numRecievers;                    // # of Receivers in this simulation read in from command line arguments
 };
 
 #endif
-

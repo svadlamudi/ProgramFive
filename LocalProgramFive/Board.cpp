@@ -21,7 +21,7 @@ using namespace std;
  *	Board*	
  */
 Board::Board(int length, int width, vector<Node> nodeVector, int numSources, int numMules, int numRecievers) {
-	this->boardLayout = vector< vector<int> >(length, vector<int>(width));
+	this->boardLayout =  vector< vector<int> >(length, vector<int>(width));
 	this->nodeVector = nodeVector;
 	this->length = length;
 	this->width = width;
@@ -150,7 +150,7 @@ void Board::generateRandomNodePos() {
 			int tempXCoord = 0;
 			int tempYCoord = rand() % (this->length - 1);
 
-			for (unsigned j = 1; j < numSources+1; j++)
+			for (int j = 1; j < numSources+1; j++)
 			{
 				while (tempXCoord == nodeVector.at(j).getXCoord() && tempYCoord == nodeVector.at(j).getYCoord())
 				{
@@ -311,9 +311,10 @@ void Board::printBoard(FILE *output, int TIME) {
 			else
 				fprintf(output, "%3d", (this->boardLayout.at(i)).at(j));
 		}
-
+		// Print column number
 		fprintf(output, "| %3d\n", i);
 	}
+	// Print ending row separator
 	printRow(output);
 	fprintf(output, "\n");
 }
@@ -417,6 +418,7 @@ void Board::runSimulation(FILE *outputFCFS, FILE *outputPQ) {
 	int TIME = 0;
 	int numPacketSent = 0, numPacketReceieved = 0, numPacketReceievedPQ = 0;
 	totalNumPackets("S", numPacketSent, numPacketReceieved);
+	cout << endl;
 
 	// Run simulation while the number of packets received is lower than the number of packets sent
 	while (numPacketReceieved < numPacketSent || numPacketReceievedPQ < numPacketSent)
@@ -438,14 +440,13 @@ void Board::runSimulation(FILE *outputFCFS, FILE *outputPQ) {
 			setNodePos();
 			printBoard(outputFCFS, TIME);
 			printBoard(outputPQ, TIME);
-			printf("Completed: %d%%\r", ceil(((double)(numPacketReceieved + numPacketReceievedPQ)) / (2 * numPacketSent) * 100));
-			fflush(stdout);
+			cout << "Completed: " << ceil(((double)(numPacketReceieved + numPacketReceievedPQ)) / (2 * numPacketSent) * 100) << "%\r" << flush;
 		}
 
 		// Increment time in simulation
 		TIME++;
 	}
-	
+	cout << "Simulation Completed.\nResults logged to manetSimFCFS.txt and manetSimPQ.txt.\n" << endl;
 	// Print results for this simulation
 	printResultsFCFS(TIME, numPacketReceieved, outputFCFS);
 	printResultsPQ(TIME, numPacketReceieved, outputPQ);
@@ -463,10 +464,11 @@ void Board::runSimulation(FILE *outputFCFS, FILE *outputPQ) {
  */
 void Board::printResultsFCFS(int TIME, int numPacketReceieved, FILE *output) {
 	
+	// Temp. variables
 	double totalDelayTimeFCFS = 0, totalVarianceTimeFCFS = 0;
 	
 	fprintf(output, "\n\n-------------------------------------------- Simulation Results Below --------------------------------------------------\n\n");
-	printBoard(output);
+	printBoard(output, TIME);
 	fprintf(output, "\n");
 	for (unsigned i = numSources + numMules + 1; i < nodeVector.size(); i++)
 	{
@@ -495,10 +497,11 @@ void Board::printResultsFCFS(int TIME, int numPacketReceieved, FILE *output) {
 */
 void Board::printResultsPQ(int TIME, int numPacketReceieved, FILE *output) {
 
+	// Temp variables
 	double totalDelayTimePQ = 0, totalVarianceTimePQ = 0;
 
 	fprintf(output, "\n\n-------------------------------------------- Simulation Results Below --------------------------------------------------\n\n");
-	printBoard(output);
+	printBoard(output, TIME);
 	fprintf(output, "\n");
 	for (unsigned i = numSources + numMules + 1; i < nodeVector.size(); i++)
 	{

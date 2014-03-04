@@ -62,28 +62,35 @@ class Node {
 		void calculateVariancePQ();
 		
 	private:
+		// All Node Use
 		int id;
 		string nodeType;
 		int xCoord;
 		int yCoord;
 		int direction;
+		Packet *currentPacket;
+		Packet *currentPacketPQ;
+
+		// All Source Node Use
+		vector<Node*> sendRoute;
 		int startTime;
 		int sendSize;
 		int sendNum;
 		int sendNumPQ;
+
+		// All Mule Node Use
+		LinkListPacket queue;
+		LinkListPacket pQSmall;
+		LinkListPacket pQMedium;
+		LinkListPacket pQLarge;
+		
+		// All Receiver Node Use
 		double sumDelayTimeFCFS;
 		double sumDelayTimePQ;
 		double sumVarianceTimeFCFS;
 		double sumVarianceTimePQ;
 		vector<double> delayTimeFCFS;
 		vector<double> delayTimePQ;
-		vector<Node*> sendRoute;
-		Packet *currentPacket;
-		Packet *currentPacketPQ;
-		LinkListPacket queue;
-		LinkListPacket pQSmall;
-		LinkListPacket pQMedium;
-		LinkListPacket pQLarge;
 };
 
 #endif

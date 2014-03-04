@@ -44,6 +44,7 @@ void LinkListPacket::setListHead(Packet **listHead) {
  *	void
  */
 void LinkListPacket::insert(Packet *newPacket) {
+	
 	Packet **temp = &(this->listHead);
 	
 	while (*temp != NULL && !(newPacket->getPacketTimes()).empty())
@@ -71,6 +72,7 @@ void LinkListPacket::insert(Packet *newPacket) {
  *	bool
  */
 bool LinkListPacket::isEmpty() {
+	
 	if (listHead == NULL)
 		return true;
 	else
@@ -110,6 +112,7 @@ void LinkListPacket::incrementWaitTime(int TIME) {
  *	Packet*
  */
 Packet * LinkListPacket::getNextNode() {
+	
 	if (this->listHead != NULL) {
 		Packet *temp = this->listHead;
 		this->listHead = *((this->listHead)->getNext());
@@ -120,7 +123,3 @@ Packet * LinkListPacket::getNextNode() {
 		return NULL;
 	}
 }
-
-
-
-

@@ -21,11 +21,12 @@ int main(const int argc, const char* argv[]) {
 		FILE *input, *outputFCFS, *outputPQ;
 		
 		// Open files
-		outputFCFS = fopen("packetsimFCFS.txt", "w");
-		outputPQ = fopen("packetsimPQ.txt", "w");
+		outputFCFS = fopen("manetSimFCFS.txt", "w");
+		outputPQ = fopen("manetSimPQ.txt", "w");
 		input = fopen(argv[5], "r");
 
 		if (outputFCFS != NULL && input != NULL) {
+			
 			// Print heading and output format
 			fprintf(outputFCFS, "Name: Jordan Feeley        Section: C05\n");
 			fprintf(outputFCFS, "Name: Sai Kiran Vadlamudi  Section: C05\n\n");
@@ -45,7 +46,6 @@ int main(const int argc, const char* argv[]) {
 
 			// Read in the source node info
 			for (int i = 0; i < atoi(argv[1]); i++)
-			//for (int i = 0; i < 6; i++)
 			{
 				// Read in the first five properties of the source node in the current line 
 				fscanf(input, "%d %d %d %d %d", &id, &startTime, &sendNum, &sendSize, &routeSize);

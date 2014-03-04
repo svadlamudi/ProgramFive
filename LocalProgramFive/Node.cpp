@@ -16,26 +16,36 @@
  *	Node*
  */
 Node::Node(int id, int xCoord, int yCoord, LinkListPacket queue) {
+	
+	// All Node Use
 	this->id = id;
 	this->nodeType = "";
 	this->xCoord = xCoord;
 	this->yCoord = yCoord;
-	this->queue = queue;
 	this->direction = 0;
+	this->currentPacket = NULL;
+	this->currentPacketPQ = NULL;
+	
+	// Source Node Use
+	this->sendRoute = *new vector<Node*>();
 	this->startTime = 0;
 	this->sendSize = 0;
 	this->sendNum = 0;
 	this->sendNumPQ = 0;
-	this->sumDelayTimeFCFS = 0;
-	this->sumDelayTimePQ = 0;
-	this->sumVarianceTimeFCFS = 0;
-	this->sumVarianceTimePQ = 0;
-	this->sendRoute = *new vector<Node*>();
-	this->currentPacket = NULL;
-	this->currentPacketPQ = NULL;
+	
+	// Mule Node Use
+	this->queue = queue;
 	this->pQSmall = *new LinkListPacket();
 	this->pQMedium = *new LinkListPacket();
 	this->pQLarge = *new LinkListPacket();
+	
+	// Receiver Node Use
+	this->sumDelayTimeFCFS = 0;
+	this->sumDelayTimePQ = 0;
+	this->delayTimeFCFS = *new vector<double>(0);
+	this->delayTimePQ = *new vector<double>(0);
+	this->sumVarianceTimeFCFS = 0;
+	this->sumVarianceTimePQ = 0;
 }
 
 // Accessors and Mutators
@@ -232,9 +242,13 @@ double Node::propogationTime(Node recieveNode) {
  *	void
  */
 void Node::moveNode(vector<Node> nodeVector, int length, int width) {
+	// Move this Node one spot in its current direction
 	nodeHop(length, width);
+
+	// If new location is already occupied by another Node
 	if (collisionCheck(nodeVector))
 	{
+		// Move this Node one more in its current direction
 		nodeHop(length, width);
 	}
 }
@@ -252,11 +266,12 @@ void Node::moveNode(vector<Node> nodeVector, int length, int width) {
  */
 void Node::nodeHop(int length, int width) {
 	
+	// Directions of movement possible by Nodes
 	enum directionWord{East, West, North, South};
 
-	switch (direction)
+	switch (this->direction)
 	{
-		case -1:
+		case -1:      // Immovable Nodes like Sources/Receivers		
 			break;
 		case East:
 			if (xCoord + 1 <= width - 2) {
@@ -310,23 +325,33 @@ void Node::nodeHop(int length, int width) {
  *	void
  */
 bool Node::collisionCheck(vector<Node> nodeVector) {
+	
+	// Iterate through the given vector of Nodes
 	for (unsigned i = 0; i < nodeVector.size(); i++) {
+		
+		// Ignore Sources/Receivers as they are outside bounds and are immovable
 		if (nodeVector.at(i).direction == -1)
 		{
 			continue;
 		}
+
+		// Skip if iterating Node is same as this Node
 		else if (nodeVector.at(i).id == id)
 		{
 			continue;
 		}
 		else
 		{
+			// If iterating Node is located at the same coordinates as this Node 
 			if (nodeVector.at(i).xCoord == xCoord && nodeVector.at(i).yCoord == yCoord)
 			{
+				// Return true to signal collision
 				return true;
 			}
 		}
 	}
+
+	// No collision detected
 	return false;
 }
 
@@ -343,63 +368,90 @@ bool Node::collisionCheck(vector<Node> nodeVector) {
  *	 void
  */
 void Node::beginSimulation(int TIME, int& numPacketReceieved, vector<Node> nodeVector, FILE *output) {
+	
+	// If this is a Source Node and the TIME is greater than the start time and needs to send more Packets
 	if (nodeType == "S" && TIME >= startTime && sendNum > 0)
 	{
+		// If not transmitting Packets
 		if (currentPacket == NULL)
 		{
+			// Generate new Packet
 			currentPacket = new Packet(&sendRoute, TIME, sendSize, 1, NULL);
 		} 
+		// If transmission of Packet is completed trigger new Packet generation and insertion of completed Packet to the first Mule queue
 		else if (TIME == currentPacket->getPacketTimes().at(0) + currentPacket->getPacketSize())
 		{
+			// Add transmitted Packet to the first Mule Node queue in its route
 			double arrivalTime = TIME + propogationTime(*(currentPacket->getPacketRoute().at(1)));
 			currentPacket->modifyPacketTimes(arrivalTime);
 			currentPacket->getPacketRoute().at(1)->queue.insert(currentPacket);
 
+			// Decrement number of Packets to be sent and generate new Packet
 			sendNum--;
 			currentPacket = new Packet(&sendRoute, TIME, sendSize, 1, NULL);
 		}
 	}
+	// If this Node is a Mule Node
 	else if (nodeType == "M")
 	{
+		// If not transmitting Packet
 		if (currentPacket == NULL)
 		{
+			// Get next Packet in Queue
 			currentPacket = queue.getNextNode();
 		}
+
+		// If Packet is done transmitting trigger getting next Packet in Queue and insert the transmitted Packet to the next Node in its route
 		else if (TIME >= currentPacket->getPacketTimes().at(currentPacket->getCurrentNode()) + currentPacket->getPacketSize() - 1)
 		{
+			// Increment Node index in Packets route
 			currentPacket->setCurrentNode(1 + currentPacket->getCurrentNode());
+			// Calculate arrival time at the next Node
 			double arrivalTime = TIME + propogationTime(*(currentPacket->getPacketRoute().at(currentPacket->getCurrentNode())));
+			// Add calculated arrival time at the currentNode index in the Packets time vector
 			currentPacket->modifyPacketTimes(arrivalTime);
+			// Add the Packet to the next Node queue
 			currentPacket->getPacketRoute().at(currentPacket->getCurrentNode())->queue.insert(currentPacket);
 
+			// Get the next Packet in this Node queue
 			currentPacket = queue.getNextNode();
 		}
+		// If still transmitting Packet increment the arrival time of all Packets in this Node queue
 		else
 		{
 			queue.incrementWaitTime(TIME);
 		}
 	}
+	// If this Node is a Receiver
 	else if (nodeType == "R")
 	{
+		// Iterate through all received Packets in this Node queue
 		while (!queue.isEmpty())
 		{
+			// Get first Node in this Node queue
 			currentPacket = queue.getNextNode();
 
+			// If Packet is not empty
 			if (currentPacket != NULL)
 			{
-				fprintf(output, "| %d: %4.2f | ", currentPacket->getPacketRoute().at(0)->getId(), currentPacket->getPacketTimes().at(0));
+				// Print info about received Packet 
+				fprintf(output, "| %3d: %4.2f | ", currentPacket->getPacketRoute().at(0)->getId(), currentPacket->getPacketTimes().at(0));
 				for (unsigned i = 1; i < currentPacket->getPacketTimes().size()-1; i++)
 				{
-					fprintf(output, "%d: %4.2f | ", currentPacket->getPacketRoute().at(i)->getId(), currentPacket->getPacketTimes().at(i));
+					fprintf(output, "%3d: %4.2f | ", currentPacket->getPacketRoute().at(i)->getId(), currentPacket->getPacketTimes().at(i));
 				}
-				fprintf(output, "%d: %4.2f |\n", currentPacket->getPacketRoute().at(currentPacket->getPacketRoute().size() - 1)->getId(), currentPacket->getPacketTimes().at(currentPacket->getPacketTimes().size() - 1));
+				fprintf(output, "%3d: %4.2f |\n", currentPacket->getPacketRoute().at(currentPacket->getPacketRoute().size() - 1)->getId(), currentPacket->getPacketTimes().at(currentPacket->getPacketTimes().size() - 1));
 				
+				// Calculate Delay Time and add it to the sum delay time for later calculation of mean
 				double delay = currentPacket->getPacketTimes().at(currentPacket->getPacketTimes().size() - 1) - currentPacket->getPacketTimes().at(0);
 				sendNum++;
 				sumDelayTimeFCFS += delay;
 
+				// Add delay time to a vector of times to later calculate variance
 				delayTimeFCFS.push_back(delay);
 				numPacketReceieved++;
+
+				delete currentPacket;
 			}
 		}
 	}
@@ -409,7 +461,7 @@ void Node::beginSimulation(int TIME, int& numPacketReceieved, vector<Node> nodeV
  * Sai Kiran Vadlamudi  C05
  * Run a Priority Queue simulation on this Node
  * 
- ** Parameters:
+ * Parameters:
  *	TIME: current time in the simulation
  *	numPacketRecieved: total number of packets received in the simulation
  *	output: pointer to the output file
@@ -418,17 +470,24 @@ void Node::beginSimulation(int TIME, int& numPacketReceieved, vector<Node> nodeV
  *	 void
  */
 void Node::beginSimulationPQ(int TIME, int& numPacketReceivedPQ, vector<Node> nodeVector, FILE *output) {
+	
+	// If this Node is a Source and current TIME is greater or equal to starting time of this Node
 	if (nodeType == "S" && TIME >= startTime && sendNumPQ > 0)
 	{
+		// If not transmitting a Packet
 		if (currentPacketPQ == NULL)
 		{
+			// Generate new Packet
 			currentPacketPQ = new Packet(&sendRoute, TIME, sendSize, 1, NULL);
 		}
+		// If Packet transmission is completed trigger new Packet generation and insertion of Packet into first Mule queue
 		else if (TIME == currentPacketPQ->getPacketTimes().at(0) + currentPacketPQ->getPacketSize())
 		{
+			// Calculate arrival time of the completed Packet at the next Node
 			double arrivalTime = TIME + propogationTime(*(currentPacketPQ->getPacketRoute().at(1)));
 			currentPacketPQ->modifyPacketTimes(arrivalTime);
 			
+			// Add the completed Packet to either the small, medium or large queue based on the size of the Packet
 			if (currentPacketPQ->getPacketSize() == 1)
 				currentPacketPQ->getPacketRoute().at(1)->pQSmall.insert(currentPacketPQ);
 			else if (currentPacketPQ->getPacketSize() == 2)
@@ -436,28 +495,41 @@ void Node::beginSimulationPQ(int TIME, int& numPacketReceivedPQ, vector<Node> no
 			else
 				currentPacketPQ->getPacketRoute().at(1)->pQLarge.insert(currentPacketPQ);
 			
+			// Decrement number of Packets this Node needs to send
 			sendNumPQ--;
+			// Generate new Packet
 			currentPacketPQ = new Packet(&sendRoute, TIME, sendSize, 1, NULL);
 		}
 	}
+	// If this Node is a Mule
 	else if (nodeType == "M")
 	{
+		// If not transmitting Packet
 		if (currentPacketPQ == NULL) {
+			// If queue not empty get the first Packet of the small Packet queue
 			if (!pQSmall.isEmpty())
 				currentPacketPQ = pQSmall.getNextNode();
+			// If small queue is empty get the first Packet of the medium Packet queue
 			else if (!pQMedium.isEmpty())
 				currentPacketPQ = pQMedium.getNextNode();
+			// If small and medium queues are empty get the first Packet of the large Packet queue
 			else if (!pQLarge.isEmpty())
 				currentPacketPQ = pQLarge.getNextNode();
 		}
+		// If Packet is transmitted trigger generation of new Packet and add transmitted Packet to next Mule
 		else if (TIME >= currentPacketPQ->getPacketTimes().at(currentPacketPQ->getCurrentNode()) + currentPacketPQ->getPacketSize() - 1) {
+			// Increment the index of the Node currently processing in the route
 			currentPacketPQ->setCurrentNode(1 + currentPacketPQ->getCurrentNode());
+
+			// Calculate and add the arrival time at the next Node
 			double arrivalTime = TIME + propogationTime(*(currentPacketPQ->getPacketRoute().at(currentPacketPQ->getCurrentNode())));
 			currentPacketPQ->modifyPacketTimes(arrivalTime);
 			
+			// If next Node in route is a Receiver add to large queue to minimize the number of queues to loop through at the receiver
 			if (currentPacketPQ->getPacketRoute().at(currentPacketPQ->getCurrentNode())->getNodeType() == "R") {
 				currentPacketPQ->getPacketRoute().at(currentPacketPQ->getCurrentNode())->pQLarge.insert(currentPacketPQ);
 			}
+			// Add the Packet to the next Node in its proper queue
 			else {
 				if (currentPacketPQ->getPacketSize() == 1)
 					currentPacketPQ->getPacketRoute().at(currentPacketPQ->getCurrentNode())->pQSmall.insert(currentPacketPQ);
@@ -467,42 +539,51 @@ void Node::beginSimulationPQ(int TIME, int& numPacketReceivedPQ, vector<Node> no
 					currentPacketPQ->getPacketRoute().at(currentPacketPQ->getCurrentNode())->pQLarge.insert(currentPacketPQ);
 			}
 
+			// Get the next Packet prioritized by size smallest first
 			if (!pQSmall.isEmpty())
 				currentPacketPQ = pQSmall.getNextNode();
 			else if (!pQMedium.isEmpty())
 				currentPacketPQ = pQMedium.getNextNode();
 			else if (!pQLarge.isEmpty())
 				currentPacketPQ = pQLarge.getNextNode();
+			// All queues are empty
 			else
 				currentPacketPQ = NULL;
 		}
+		// Increment the arrival time at this Node of all the Packets in the three queues
 		else {
 			pQSmall.incrementWaitTime(TIME);
 			pQMedium.incrementWaitTime(TIME);
 			pQLarge.incrementWaitTime(TIME);
 		}
 	}
+	// If this Node is a Receiver
 	else if (nodeType == "R")
 	{
+		// Print results of all the packets received and remove them from simulation
 		while (!pQLarge.isEmpty()) 
 		{
 			currentPacketPQ = pQLarge.getNextNode();
 
 			if (currentPacketPQ != NULL)
 			{
-				fprintf(output, "| %d: %4.2f | ", currentPacketPQ->getPacketRoute().at(0)->getId(), currentPacketPQ->getPacketTimes().at(0));
+				fprintf(output, "| %3d: %4.2f | ", currentPacketPQ->getPacketRoute().at(0)->getId(), currentPacketPQ->getPacketTimes().at(0));
 				for (unsigned i = 1; i < currentPacketPQ->getPacketTimes().size() - 1; i++)
 				{
-					fprintf(output, "%d: %4.2f | ", currentPacketPQ->getPacketRoute().at(i)->getId(), currentPacketPQ->getPacketTimes().at(i));
+					fprintf(output, "%3d: %4.2f | ", currentPacketPQ->getPacketRoute().at(i)->getId(), currentPacketPQ->getPacketTimes().at(i));
 				}
-				fprintf(output, "%d: %4.2f |\n", currentPacketPQ->getPacketRoute().at(currentPacketPQ->getPacketRoute().size() - 1)->getId(), currentPacketPQ->getPacketTimes().at(currentPacketPQ->getPacketTimes().size() - 1));
+				fprintf(output, "%3d: %4.2f |\n", currentPacketPQ->getPacketRoute().at(currentPacketPQ->getPacketRoute().size() - 1)->getId(), currentPacketPQ->getPacketTimes().at(currentPacketPQ->getPacketTimes().size() - 1));
 
+				// Calculate delay and add to running sum to calculate mean at a later time
 				double delay = currentPacketPQ->getPacketTimes().at(currentPacketPQ->getPacketTimes().size() - 1) - currentPacketPQ->getPacketTimes().at(0);
 				sendNumPQ++;
 				sumDelayTimePQ += delay;
 
+				// Add delay to the vector of times to later calculate variance
 				delayTimePQ.push_back(delay);
 				numPacketReceivedPQ++;
+
+				delete currentPacketPQ;
 			}
 		}
 	}

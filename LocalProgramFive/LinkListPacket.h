@@ -25,7 +25,7 @@ class LinkListPacket {
 		void printList(FILE *output);
 
 	private:
-		Packet *listHead;
+		Packet *listHead;  // Pointer to the head of the list
 };
 
 #endif
