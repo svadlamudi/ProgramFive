@@ -106,7 +106,7 @@ void Board::createNodeVector() {
 }
 
 /*
- * Sai Kiran Vadlamudi  C05
+ * Jordan Feeley  C05
  * Initialize this board with all 0s
  * 
  * Parameters:
@@ -214,7 +214,7 @@ void Board::generateRandomNodePos() {
 }
 
 /*
- * Sai Kiran Vadlamudi  C05
+ * Jordan Feeley  C05
  * Set the positions of the Nodes on the board
  * 
  * Parameters:
@@ -236,7 +236,7 @@ void Board::setNodePos() {
 }
 
 /*
- * Sai Kiran Vadlamudi  C05
+ * Jordan Feeley  C05
  * Prints a row of '-'
  * 
  * Parameters:
@@ -256,7 +256,7 @@ void Board::printRow(FILE *output) {
 }
 
 /*
- * Sai Kiran Vadlamudi  C05
+ * Jordan Feeley  C05
  * Print this Board
  * 
  * Parameters:
@@ -367,7 +367,7 @@ void Board::moveNodes() {
 }
 
 /*
- * Sai Kiran Vadlamudi  C05
+ * Jordan Feeley  C05
  * Calculate the total number of packets to be sent and received
  * 
  * Parameters:

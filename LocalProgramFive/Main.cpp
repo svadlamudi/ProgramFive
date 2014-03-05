@@ -5,8 +5,11 @@
 using namespace std;
 
 /*
+ * Sai Kiran Vadlamudi  C05
+ * Jordan Feeley  C05
+ *
  * Main
- *	Driver function
+ * Driver function
  */
 int main(const int argc, const char* argv[]) {
 
