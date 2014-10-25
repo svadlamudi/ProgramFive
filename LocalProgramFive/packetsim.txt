@@ -1,4 +1,3 @@
-Name: Jordan Feeley        Section: C05
 Name: Sai Kiran Vadlamudi  Section: C05
 
 | Source: Arrival Time | All Mules: All Arrival Times | Receiver: Arrival Time
