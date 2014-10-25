@@ -4,7 +4,7 @@
 // Constructors
 
 /*
- * Jordan Feeley  C05
+ * Sai Kiran Vadlamudi  C05
  * Create and return a pointer to the new Packet object
  * 
  * Parameters:
@@ -74,7 +74,7 @@ void Packet::setNext(Packet *next) {
 // Object Functions
 
 /*
- * Jordan Feeley  C05
+ * Sai Kiran Vadlamudi  C05
  * Modify the time at the currentNode in the packetTimes to given time
  * 
  * Parameters:
