@@ -5,7 +5,7 @@ using namespace std;
 // Constructors
 
 /*
- * Jordan Feeley  C05
+ * Sai Kiran Vadlamudi  C05
  * Create and return a pointer to new LinkListPacket object
  * 
  * Parameters:
@@ -33,7 +33,7 @@ void LinkListPacket::setListHead(Packet **listHead) {
 // Object Functions
 
 /*
- * Jordan Feeley  C05
+ * Sai Kiran Vadlamudi  C05
  * Create and Add new node to list
  *
  * Parameters:
@@ -62,7 +62,7 @@ void LinkListPacket::insert(Packet *newPacket) {
 }
 
 /*
- * Jordan Feeley  C05
+ * Sai Kiran Vadlamudi  C05
  * Return true if this list is empty
  * 
  * Parameters:
@@ -80,7 +80,7 @@ bool LinkListPacket::isEmpty() {
 }
 
 /*
- * Jordan Feeley  C05
+ * Sai Kiran Vadlamudi  C05
  * Increment the arrival time of the packets waiting in the queue
  * 
  * Parameters:
@@ -102,7 +102,7 @@ void LinkListPacket::incrementWaitTime(int TIME) {
 }
 
 /*
- * Jordan Feeley  C05
+ * Sai Kiran Vadlamudi  C05
  * Return the first node in the list. NULL if list is empty.
  *
  * Parameters:
