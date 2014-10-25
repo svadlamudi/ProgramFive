@@ -6,7 +6,6 @@ using namespace std;
 
 /*
  * Sai Kiran Vadlamudi  C05
- * Jordan Feeley  C05
  *
  * Main
  * Driver function
@@ -31,10 +30,8 @@ int main(const int argc, const char* argv[]) {
 		if (outputFCFS != NULL && input != NULL) {
 			
 			// Print heading and output format
-			fprintf(outputFCFS, "Name: Jordan Feeley        Section: C05\n");
 			fprintf(outputFCFS, "Name: Sai Kiran Vadlamudi  Section: C05\n\n");
 			fprintf(outputFCFS, "| Source: Arrival Time | All Mules: All Arrival Times | Receiver: Arrival Time\n\n");
-			fprintf(outputPQ, "Name: Jordan Feeley        Section: C05\n");
 			fprintf(outputPQ, "Name: Sai Kiran Vadlamudi  Section: C05\n\n");
 			fprintf(outputPQ, "| Source: Arrival Time | All Mules: All Arrival Times | Receiver: Arrival Time\n\n");
 			
