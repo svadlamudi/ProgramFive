@@ -591,7 +591,7 @@ void Node::beginSimulationPQ(int TIME, int& numPacketReceivedPQ, vector<Node> no
 
 
 /*
- * Jordan Feeley  C05
+ * Sai Kiran Vadlamudi  C05
  * Calculate the variance of the FCFS delay time for this Node
  * 
  * Parameters:
@@ -613,7 +613,7 @@ void Node::calculateVarianceFCFS() {
 }
 
 /*
- * Jordan Feeley  C05
+ * Sai Kiran Vadlamudi  C05
  * Calculate the variance of the PQ delay time for this Node
  *
  * Parameters:
